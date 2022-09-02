@@ -96,6 +96,11 @@
   <ItemGroup>
     <None Include="cRenderState.inl" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\External\OpenGlExtensions\OpenGlExtensions.vcxproj">
+      <Project>{433f6d20-943a-4d7b-bffe-bc9dfc932e6e}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
@@ -174,7 +179,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <ForcedIncludeFiles>$(ProjectDir)Windows/ExternalLibraries.win.h</ForcedIncludeFiles>
+      <ForcedIncludeFiles>$(ProjectDir)Windows/ExternalLibraries.win.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -206,7 +211,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <ForcedIncludeFiles>$(ProjectDir)Windows/ExternalLibraries.win.h</ForcedIncludeFiles>
+      <ForcedIncludeFiles>$(ProjectDir)Windows/ExternalLibraries.win.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
     </ClCompile>
     <Link>
       <SubSystem>

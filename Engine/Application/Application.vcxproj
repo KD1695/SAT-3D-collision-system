@@ -34,6 +34,9 @@
     <ProjectReference Include="..\Concurrency\Concurrency.vcxproj">
       <Project>{60ff1b7f-04ec-40ae-bded-5fe1742da10e}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\Graphics\Graphics.vcxproj">
+      <Project>{377450e4-fa71-4716-b271-f3d2a1cb7248}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\Logging\Logging.vcxproj">
       <Project>{a5c152ad-26a3-4835-bb10-ef292daf94ac}</Project>
     </ProjectReference>

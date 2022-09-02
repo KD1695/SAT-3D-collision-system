@@ -5,6 +5,7 @@
 
 #include <Engine/Asserts/Asserts.h>
 #include <Engine/UserInput/UserInput.h>
+#include <Engine/Logging/Logging.h>
 
 // Inherited Implementation
 //=========================
@@ -28,10 +29,12 @@ void eae6320::cMyGame::UpdateBasedOnInput()
 
 eae6320::cResult eae6320::cMyGame::Initialize()
 {
+	eae6320::Logging::OutputMessage("Initializing Game...");
 	return Results::Success;
 }
 
 eae6320::cResult eae6320::cMyGame::CleanUp()
 {
+	eae6320::Logging::OutputMessage("Cleaning up Game...");
 	return Results::Success;
 }

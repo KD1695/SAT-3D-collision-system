@@ -43,7 +43,7 @@ void main(
 {
 	float timeSine = sin(g_elapsedSecondCount_simulationTime);
 	float variableValue =  timeSine < 0 ? timeSine+1 : timeSine;
-	// Output solid white
+	// Output random fading red
 	o_color = float4(
 		// RGB (color)
 		variableValue, 0.0, 0.0,
@@ -81,7 +81,7 @@ void main()
 {
 	float timeSine = sin(g_elapsedSecondCount_simulationTime);
 	float variableValue =  timeSine < 0 ? timeSine+1 : timeSine;
-	// Output solid white
+	// Output random fading red
 	o_color = vec4(
 		// RGB (color)
 		variableValue, 0.0, 0.0,

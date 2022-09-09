@@ -78,7 +78,6 @@ namespace
 
 namespace
 {
-	eae6320::cResult InitializeShadingData();
 	eae6320::cResult InitializeViews( const unsigned int i_resolutionWidth, const unsigned int i_resolutionHeight );
 }
 

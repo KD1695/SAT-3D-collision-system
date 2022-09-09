@@ -16,6 +16,8 @@ namespace eae6320
 		{
 #ifdef EAE6320_PLATFORM_GL
 			GLuint s_programId = 0;
+			cResult CleanUpProgram();
+			cResult InitProgram(cResult result);
 #endif
 			eae6320::Graphics::cShader* s_vertexShader = nullptr;
 			eae6320::Graphics::cShader* s_fragmentShader = nullptr;

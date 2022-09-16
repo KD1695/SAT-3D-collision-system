@@ -89,7 +89,7 @@ eae6320::cResult eae6320::Graphics::SignalThatAllDataForAFrameHasBeenSubmitted()
 // Render
 //-------
 
-float eae6320::Graphics::bgColor[4] = { 0,0,0,1 };
+float eae6320::Graphics::bgColor[4] = { 0,0,1,1 };
 
 void eae6320::Graphics::RenderFrame()
 {
@@ -283,6 +283,9 @@ eae6320::cResult eae6320::Graphics::Initialize(const sInitializationParameters& 
 			return result;
 		}
 	}
+	//Log sizeof mesh
+	eae6320::Logging::OutputMessage("Mesh1 size: %d", sizeof(mesh1));
+	eae6320::Logging::OutputMessage("Mesh2 size: %d", sizeof(mesh2));
 
 	return result;
 }

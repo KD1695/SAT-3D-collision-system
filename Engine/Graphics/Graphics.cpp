@@ -53,7 +53,8 @@ namespace
 
 	// Geometry Data
 	//-------------
-	eae6320::Graphics::cMesh* mesh = nullptr;
+	eae6320::Graphics::cMesh* mesh1 = nullptr;
+	eae6320::Graphics::cMesh* mesh2 = nullptr;
 
 	// Shading Data
 	//-------------
@@ -135,8 +136,10 @@ void eae6320::Graphics::RenderFrame()
 	if (effect != nullptr)
 		effect->Bind();
 	// Draw the geometry
-	if (mesh != nullptr)
-		mesh->Draw();
+	if (mesh1 != nullptr)
+		mesh1->Draw();
+	if (mesh2 != nullptr)
+		mesh2->Draw();
 
 	Graphics::SwapBuffer();
 
@@ -211,10 +214,58 @@ eae6320::cResult eae6320::Graphics::Initialize(const sInitializationParameters& 
 			return result;
 		}
 	}
+
 	// Initialize the geometry
-	mesh = new cMesh();
+	//left handed
+	eae6320::Graphics::VertexFormats::sVertex_mesh vertexData[4];
 	{
-		if (!(result = mesh->InitializeMesh()))
+		vertexData[0].x = 0.0f;
+		vertexData[0].y = 0.0f;
+		vertexData[0].z = 0.0f;
+
+		vertexData[1].x = 1.0f;
+		vertexData[1].y = 1.0f;
+		vertexData[1].z = 0.0f;
+
+		vertexData[2].x = 1.0f;
+		vertexData[2].y = 0.0f;
+		vertexData[2].z = 0.0f;
+
+		vertexData[3].x = 0.0f;
+		vertexData[3].y = 1.0f;
+		vertexData[3].z = 0.0f;
+	}
+	eae6320::Graphics::VertexFormats::sVertex_mesh vertexData_2[4];
+	{
+		vertexData_2[0].x = 0.0f;
+		vertexData_2[0].y = 0.0f;
+		vertexData_2[0].z = 0.0f;
+
+		vertexData_2[1].x = -1.0f;
+		vertexData_2[1].y = -1.0f;
+		vertexData_2[1].z = 0.0f;
+
+		vertexData_2[2].x = -1.0f;
+		vertexData_2[2].y = 0.0f;
+		vertexData_2[2].z = 0.0f;
+
+		vertexData_2[3].x = 0.0f;
+		vertexData_2[3].y = -1.0f;
+		vertexData_2[3].z = 0.0f;
+	}
+	uint16_t indexData_1[6] = { 0,1,2,0,3,1 };
+	uint16_t indexData_2[6] = { 0,1,2,0,3,1 };
+	mesh1 = new cMesh();
+	{
+		if (!(result = mesh1->InitializeMesh(6, indexData_1, 4, vertexData)))
+		{
+			EAE6320_ASSERTF(false, "Can't initialize Graphics without the geometry data");
+			return result;
+		}
+	}
+	mesh2 = new cMesh();
+	{
+		if (!(result = mesh2->InitializeMesh(6, indexData_2, 4, vertexData_2)))
 		{
 			EAE6320_ASSERTF(false, "Can't initialize Graphics without the geometry data");
 			return result;
@@ -230,8 +281,10 @@ eae6320::cResult eae6320::Graphics::CleanUp()
 
 	Graphics::CleanUpBuffer();
 
-	if (mesh != nullptr)
-		mesh->Cleanup();
+	if (mesh1 != nullptr)
+		mesh1->Cleanup();
+	if (mesh2 != nullptr)
+		mesh2->Cleanup();
 
 	if (effect != nullptr)
 		effect->CleanUp();

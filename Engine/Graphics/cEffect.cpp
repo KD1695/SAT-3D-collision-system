@@ -1,17 +1,17 @@
 #include <Engine/Graphics/cEffect.h>
 #include <Engine/Logging/Logging.h>
 
-eae6320::cResult eae6320::Graphics::cEffect::Initialize()
+eae6320::cResult eae6320::Graphics::cEffect::Initialize(std::string fragmentShaderPath, std::string vertexShaderPath)
 {
 	auto result = eae6320::Results::Success;
 
-	if (!(result = eae6320::Graphics::cShader::Load("data/Shaders/Vertex/standard.shader",
+	if (!(result = eae6320::Graphics::cShader::Load(vertexShaderPath,
 		s_vertexShader, eae6320::Graphics::eShaderType::Vertex)))
 	{
 		EAE6320_ASSERTF(false, "Can't initialize shading data without vertex shader");
 		return result;
 	}
-	if (!(result = eae6320::Graphics::cShader::Load("data/Shaders/Fragment/animatedColor.shader",
+	if (!(result = eae6320::Graphics::cShader::Load(fragmentShaderPath,
 		s_fragmentShader, eae6320::Graphics::eShaderType::Fragment)))
 	{
 		EAE6320_ASSERTF(false, "Can't initialize shading data without fragment shader");

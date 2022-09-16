@@ -58,7 +58,8 @@ namespace
 
 	// Shading Data
 	//-------------
-	eae6320::Graphics::cEffect* effect = nullptr;
+	eae6320::Graphics::cEffect* effect1 = nullptr;
+	eae6320::Graphics::cEffect* effect2 = nullptr;
 }
 
 // Interface
@@ -133,11 +134,14 @@ void eae6320::Graphics::RenderFrame()
 	}
 
 	// Bind the shading data
-	if (effect != nullptr)
-		effect->Bind();
+	if (effect1 != nullptr)
+		effect1->Bind();
 	// Draw the geometry
 	if (mesh1 != nullptr)
 		mesh1->Draw();
+	
+	if (effect2 != nullptr)
+		effect2->Bind();
 	if (mesh2 != nullptr)
 		mesh2->Draw();
 
@@ -206,9 +210,17 @@ eae6320::cResult eae6320::Graphics::Initialize(const sInitializationParameters& 
 	Graphics::InitializeBuffer(i_initializationParameters);
 
 	// Initialize the shading data
-	effect = new cEffect();
+	effect1 = new cEffect();
 	{
-		if (!(result = effect->Initialize()))
+		if (!(result = effect1->Initialize()))
+		{
+			EAE6320_ASSERTF(false, "Can't initialize Graphics without the shading data");
+			return result;
+		}
+	}
+	effect2 = new cEffect();
+	{
+		if (!(result = effect2->Initialize("data/Shaders/Fragment/animatedColor.shader")))
 		{
 			EAE6320_ASSERTF(false, "Can't initialize Graphics without the shading data");
 			return result;
@@ -286,8 +298,10 @@ eae6320::cResult eae6320::Graphics::CleanUp()
 	if (mesh2 != nullptr)
 		mesh2->Cleanup();
 
-	if (effect != nullptr)
-		effect->CleanUp();
+	if (effect1 != nullptr)
+		effect1->CleanUp();
+	if (effect2 != nullptr)
+		effect2->CleanUp();
 
 	{
 		const auto result_constantBuffer_frame = s_constantBuffer_frame.CleanUp();

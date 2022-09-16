@@ -16,7 +16,8 @@
 
 #include "Configuration.h"
 
-#include "Graphics.h"
+#include <Engine/Graphics/Graphics.h>
+#include <Engine/Graphics/FrameBuffer.h>
 
 #include <Engine/Results/Results.h>
 
@@ -44,6 +45,18 @@ namespace eae6320
 {
 	namespace Graphics
 	{
+		struct sInitializationParameters
+		{
+#if defined( EAE6320_PLATFORM_WINDOWS )
+			HWND mainWindow = NULL;
+#if defined( EAE6320_PLATFORM_D3D )
+			uint16_t resolutionWidth = 0, resolutionHeight = 0;
+#elif defined( EAE6320_PLATFORM_GL )
+			HINSTANCE thisInstanceOfTheApplication = NULL;
+#endif
+#endif
+		};
+
 		struct sContext
 		{
 			// Data

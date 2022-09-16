@@ -5,7 +5,7 @@ eae6320::cResult eae6320::Graphics::InitializeBuffer(const sInitializationParame
 	return eae6320::Results::Success;
 }
 
-void eae6320::Graphics::SetupBuffer()
+void eae6320::Graphics::SetupBuffer(float clearColor[4])
 {
 	// Every frame an entirely new image will be created.
 	// Before drawing anything, then, the previous image will be erased
@@ -13,7 +13,7 @@ void eae6320::Graphics::SetupBuffer()
 	{
 		// Black is usually used
 		{
-			glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+			glClearColor(clearColor[0], clearColor[1], clearColor[2], clearColor[3]);
 			EAE6320_ASSERT(glGetError() == GL_NO_ERROR);
 		}
 		{

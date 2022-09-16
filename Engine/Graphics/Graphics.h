@@ -53,6 +53,10 @@ namespace eae6320
 		// It will render a submitted frame as soon as it is ready
 		// (i.e. as soon as SignalThatAllDataForAFrameHasBeenSubmitted() has been called)
 		void RenderFrame();
+		
+		
+		extern float bgColor[4];
+		void SetBgColor(float color[4]);
 
 		// Initialize / Clean Up
 		//----------------------

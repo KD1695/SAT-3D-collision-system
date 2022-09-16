@@ -10,9 +10,8 @@ namespace eae6320
 	namespace Graphics
 	{
 		struct sInitializationParameters;
-
 		cResult InitializeBuffer(const sInitializationParameters& i_initializationParameters);
-		void SetupBuffer();
+		void SetupBuffer(float clearColor[4]);
 		void SwapBuffer();
 		void CleanUpBuffer();
 	}

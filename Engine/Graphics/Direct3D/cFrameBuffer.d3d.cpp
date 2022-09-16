@@ -165,7 +165,7 @@ eae6320::cResult eae6320::Graphics::InitializeBuffer(const sInitializationParame
 	return result;
 }
 
-void eae6320::Graphics::SetupBuffer()
+void eae6320::Graphics::SetupBuffer(float clearColor[4])
 {
 	auto* const direct3dImmediateContext = sContext::g_context.direct3dImmediateContext;
 	EAE6320_ASSERT(direct3dImmediateContext);
@@ -177,7 +177,6 @@ void eae6320::Graphics::SetupBuffer()
 		EAE6320_ASSERT(s_renderTargetView);
 
 		// Black is usually used
-		constexpr float clearColor[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
 		direct3dImmediateContext->ClearRenderTargetView(s_renderTargetView, clearColor);
 	}
 	// In addition to the color buffer there is also a hidden image called the "depth buffer"

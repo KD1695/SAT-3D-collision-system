@@ -14,7 +14,6 @@
 #include <Engine/Graphics/cEffect.h>
 #include <Engine/Graphics/cConstantBuffer.h>
 #include <Engine/Graphics/ConstantBufferFormats.h>
-#include <Engine/Graphics/sContext.h>
 
 // Static Data
 //============
@@ -88,6 +87,8 @@ eae6320::cResult eae6320::Graphics::SignalThatAllDataForAFrameHasBeenSubmitted()
 // Render
 //-------
 
+float eae6320::Graphics::bgColor[4] = { 0,0,0,1 };
+
 void eae6320::Graphics::RenderFrame()
 {
 	// Wait for the application loop to submit data to be rendered
@@ -117,7 +118,8 @@ void eae6320::Graphics::RenderFrame()
 		}
 	}
 
-	Graphics::SetupBuffer();
+	//default clear color
+	Graphics::SetupBuffer(eae6320::Graphics::bgColor);
 
 	EAE6320_ASSERT(s_dataBeingRenderedByRenderThread);
 	auto* const dataRequiredToRenderFrame = s_dataBeingRenderedByRenderThread;
@@ -145,6 +147,13 @@ void eae6320::Graphics::RenderFrame()
 		// (At this point in the class there isn't anything that needs to be cleaned up)
 		//dataRequiredToRenderFrame	// TODO
 	}
+}
+
+void eae6320::Graphics::SetBgColor(float color[4])
+{
+	bgColor[0] = color[0];
+	bgColor[1] = color[1];
+	bgColor[2] = color[2];
 }
 
 // Initialize / Clean Up

@@ -1,3 +1,4 @@
+#pragma once
 /*
 	The graphics "context" holds platform-specific graphics state
 
@@ -7,7 +8,6 @@
 	You can add data or functions to the context
 	if there is anything that you think should be accessible globally.
 */
-
 #ifndef EAE6320_GRAPHICS_CCONTEXT_H
 #define EAE6320_GRAPHICS_CCONTEXT_H
 
@@ -15,9 +15,6 @@
 //=========
 
 #include "Configuration.h"
-
-#include <Engine/Graphics/Graphics.h>
-#include <Engine/Graphics/FrameBuffer.h>
 
 #include <Engine/Results/Results.h>
 

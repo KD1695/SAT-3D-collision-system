@@ -12,6 +12,7 @@
 
 #include <cstdint>
 #include <Engine/Results/Results.h>
+#include <Engine/Graphics/FrameBuffer.h>
 
 #if defined( EAE6320_PLATFORM_WINDOWS )
 	#include <Engine/Windows/Includes.h>
@@ -24,6 +25,7 @@ namespace eae6320
 {
 	namespace Graphics
 	{
+		struct sInitializationParameters;
 		// Submission
 		//-----------
 
@@ -51,21 +53,13 @@ namespace eae6320
 		// It will render a submitted frame as soon as it is ready
 		// (i.e. as soon as SignalThatAllDataForAFrameHasBeenSubmitted() has been called)
 		void RenderFrame();
+		
+		
+		extern float bgColor[4];
+		void SetBgColor(float color[4]);
 
 		// Initialize / Clean Up
 		//----------------------
-
-		struct sInitializationParameters
-		{
-#if defined( EAE6320_PLATFORM_WINDOWS )
-			HWND mainWindow = NULL;
-	#if defined( EAE6320_PLATFORM_D3D )
-			uint16_t resolutionWidth = 0, resolutionHeight = 0;
-	#elif defined( EAE6320_PLATFORM_GL )
-			HINSTANCE thisInstanceOfTheApplication = NULL;
-	#endif
-#endif
-		};
 
 		cResult Initialize( const sInitializationParameters& i_initializationParameters );
 		cResult CleanUp();

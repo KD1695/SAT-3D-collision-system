@@ -3,7 +3,7 @@
 #include <Engine/Logging/Logging.h>
 #include <Engine/Graphics/VertexFormats.h>
 
-eae6320::cResult eae6320::Graphics::cMesh::InitializeMesh()
+eae6320::cResult eae6320::Graphics::cMesh::InitializeMesh(size_t _indexCount, uint16_t _indexData[], size_t _vertexCount, eae6320::Graphics::VertexFormats::sVertex_mesh _vertexData[])
 {
 	auto result = eae6320::Results::Success;
 
@@ -63,40 +63,9 @@ eae6320::cResult eae6320::Graphics::cMesh::InitializeMesh()
 	}
 	// Assign the data to the buffer
 	{
-		constexpr unsigned int triangleCount = 2;
-		constexpr unsigned int vertexCountPerTriangle = 3;
-		const auto vertexCount = triangleCount * vertexCountPerTriangle;
-		eae6320::Graphics::VertexFormats::sVertex_mesh vertexData[vertexCount];
-		{
-			// OpenGL is right-handed
-
-			vertexData[0].x = 0.0f;
-			vertexData[0].y = 0.0f;
-			vertexData[0].z = 0.0f;
-
-			vertexData[1].x = 1.0f;
-			vertexData[1].y = 0.0f;
-			vertexData[1].z = 0.0f;
-
-			vertexData[2].x = 1.0f;
-			vertexData[2].y = 1.0f;
-			vertexData[2].z = 0.0f;
-
-			vertexData[3].x = 0.0f;
-			vertexData[3].y = 0.0f;
-			vertexData[3].z = 0.0f;
-
-			vertexData[4].x = 1.0f;
-			vertexData[4].y = 1.0f;
-			vertexData[4].z = 0.0f;
-
-			vertexData[5].x = 0.0f;
-			vertexData[5].y = 1.0f;
-			vertexData[5].z = 0.0f;
-		}
-		constexpr auto bufferSize = sizeof(vertexData[0]) * vertexCount;
-		EAE6320_ASSERT(bufferSize <= std::numeric_limits<GLsizeiptr>::max());
-		glBufferData(GL_ARRAY_BUFFER, static_cast<GLsizeiptr>(bufferSize), reinterpret_cast<GLvoid*>(vertexData),
+		const auto bufferSize = sizeof(_vertexData[0]) * _vertexCount;
+		EAE6320_ASSERT(static_cast<GLsizeiptr>(bufferSize) <= std::numeric_limits<GLsizeiptr>::max());
+		glBufferData(GL_ARRAY_BUFFER, static_cast<GLsizeiptr>(bufferSize), reinterpret_cast<GLvoid*>(_vertexData),
 			// In our class we won't ever read from the buffer
 			GL_STATIC_DRAW);
 		const auto errorCode = glGetError();
@@ -105,6 +74,59 @@ eae6320::cResult eae6320::Graphics::cMesh::InitializeMesh()
 			result = eae6320::Results::Failure;
 			EAE6320_ASSERTF(false, reinterpret_cast<const char*>(gluErrorString(errorCode)));
 			eae6320::Logging::OutputError("OpenGL failed to allocate the vertex buffer: %s",
+				reinterpret_cast<const char*>(gluErrorString(errorCode)));
+			return result;
+		}
+	}
+	// Create a index buffer object and make it active
+	{
+		constexpr GLsizei bufferCount = 1;
+		glGenBuffers(bufferCount, &s_indexBufferId);
+		const auto errorCode = glGetError();
+		if (errorCode == GL_NO_ERROR)
+		{
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, s_indexBufferId);
+			const auto errorCode = glGetError();
+			if (errorCode != GL_NO_ERROR)
+			{
+				result = eae6320::Results::Failure;
+				EAE6320_ASSERTF(false, reinterpret_cast<const char*>(gluErrorString(errorCode)));
+				eae6320::Logging::OutputError("OpenGL failed to bind a new index buffer: %s",
+					reinterpret_cast<const char*>(gluErrorString(errorCode)));
+				return result;
+			}
+		}
+		else
+		{
+			result = eae6320::Results::Failure;
+			EAE6320_ASSERTF(false, reinterpret_cast<const char*>(gluErrorString(errorCode)));
+			eae6320::Logging::OutputError("OpenGL failed to get an unused index buffer ID: %s",
+				reinterpret_cast<const char*>(gluErrorString(errorCode)));
+			return result;
+		}
+	}
+	// Assign the data to the buffer
+	{
+		indexCount = _indexCount;
+		//reorder index data
+		for (size_t i = 0; i < _indexCount; i+=3)
+		{
+			int temp = _indexData[i + 1];
+			_indexData[i + 1] = _indexData[i + 2];
+			_indexData[i + 2] = temp;
+		}
+
+		const auto bufferSize = sizeof(uint16_t) * _indexCount;
+		EAE6320_ASSERT(static_cast<GLsizeiptr>(bufferSize) <= std::numeric_limits<GLsizeiptr>::max());
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, static_cast<GLsizeiptr>(bufferSize), reinterpret_cast<GLvoid*>(_indexData),
+			// In our class we won't ever read from the buffer
+			GL_STATIC_DRAW);
+		const auto errorCode = glGetError();
+		if (errorCode != GL_NO_ERROR)
+		{
+			result = eae6320::Results::Failure;
+			EAE6320_ASSERTF(false, reinterpret_cast<const char*>(gluErrorString(errorCode)));
+			eae6320::Logging::OutputError("OpenGL failed to allocate the index buffer: %s",
 				reinterpret_cast<const char*>(gluErrorString(errorCode)));
 			return result;
 		}
@@ -207,6 +229,23 @@ eae6320::cResult eae6320::Graphics::cMesh::Cleanup()
 			}
 			s_vertexBufferId = 0;
 		}
+		if (s_indexBufferId != 0)
+		{
+			constexpr GLsizei bufferCount = 1;
+			glDeleteBuffers(bufferCount, &s_indexBufferId);
+			const auto errorCode = glGetError();
+			if (errorCode != GL_NO_ERROR)
+			{
+				if (result)
+				{
+					result = Results::Failure;
+				}
+				EAE6320_ASSERTF(false, reinterpret_cast<const char*>(gluErrorString(errorCode)));
+				Logging::OutputError("OpenGL failed to delete the index buffer: %s",
+					reinterpret_cast<const char*>(gluErrorString(errorCode)));
+			}
+			s_indexBufferId = 0;
+		}
 	}
 	
 	return result;
@@ -226,14 +265,9 @@ void eae6320::Graphics::cMesh::Draw()
 		// a triangle list is defined
 		// (meaning that every primitive is a triangle and will be defined by three vertices)
 		constexpr GLenum mode = GL_TRIANGLES;
-		// As of this comment only a single triangle is drawn
-		// (you will have to update this code in future assignments!)
-		constexpr unsigned int triangleCount = 2;
-		constexpr unsigned int vertexCountPerTriangle = 3;
-		constexpr auto vertexCountToRender = triangleCount * vertexCountPerTriangle;
 		// It's possible to start rendering primitives in the middle of the stream
-		constexpr unsigned int indexOfFirstVertexToRender = 0;
-		glDrawArrays(mode, indexOfFirstVertexToRender, vertexCountToRender);
+		const GLvoid* const offset = 0;
+		glDrawElements(mode, static_cast<GLsizei>(indexCount), GL_UNSIGNED_SHORT, offset);
 		EAE6320_ASSERT(glGetError() == GL_NO_ERROR);
 	}
 }

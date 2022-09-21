@@ -25,7 +25,7 @@ namespace eae6320
 			eae6320::Graphics::cRenderState s_renderState;
 
 		public:
-			cResult Initialize();
+			cResult Initialize(std::string fragmentShaderPath = "data/Shaders/Fragment/standard.shader", std::string vertexShaderPath = "data/Shaders/Vertex/standard.shader");
 			cResult CleanUp();
 			void Bind();
 		};

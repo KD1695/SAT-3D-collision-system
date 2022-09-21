@@ -1,3 +1,4 @@
+#pragma once
 /*
 	The graphics "context" holds platform-specific graphics state
 
@@ -7,7 +8,6 @@
 	You can add data or functions to the context
 	if there is anything that you think should be accessible globally.
 */
-
 #ifndef EAE6320_GRAPHICS_CCONTEXT_H
 #define EAE6320_GRAPHICS_CCONTEXT_H
 
@@ -15,8 +15,6 @@
 //=========
 
 #include "Configuration.h"
-
-#include "Graphics.h"
 
 #include <Engine/Results/Results.h>
 
@@ -44,6 +42,18 @@ namespace eae6320
 {
 	namespace Graphics
 	{
+		struct sInitializationParameters
+		{
+#if defined( EAE6320_PLATFORM_WINDOWS )
+			HWND mainWindow = NULL;
+#if defined( EAE6320_PLATFORM_D3D )
+			uint16_t resolutionWidth = 0, resolutionHeight = 0;
+#elif defined( EAE6320_PLATFORM_GL )
+			HINSTANCE thisInstanceOfTheApplication = NULL;
+#endif
+#endif
+		};
+
 		struct sContext
 		{
 			// Data

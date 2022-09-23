@@ -25,6 +25,8 @@ namespace eae6320
 {
 	namespace Graphics
 	{
+		class cMesh;
+		class cEffect;
 		struct sInitializationParameters;
 		struct sDataRequiredToRenderAFrame;
 		// Submission
@@ -57,6 +59,8 @@ namespace eae6320
 		
 		
 		void SetBgColor(float color[4]);
+		void SetMeshData(cMesh* mesh);
+		void SetEffectData(cEffect* effect);
 
 		// Initialize / Clean Up
 		//----------------------

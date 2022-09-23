@@ -33,7 +33,8 @@ namespace
 	{
 		eae6320::Graphics::ConstantBufferFormats::sFrame constantData_frame;
 		float bgColor[4];
-
+		eae6320::Graphics::cMesh* mesh1 = nullptr;
+		eae6320::Graphics::cEffect* effect1 = nullptr;
 	};
 	// In our class there will be two copies of the data required to render a frame:
 	//	* One of them will be in the process of being populated by the data currently being submitted by the application loop thread
@@ -52,16 +53,6 @@ namespace
 	// and the application loop thread can start submitting data for the following frame
 	// (the application loop thread waits for the signal)
 	eae6320::Concurrency::cEvent s_whenDataForANewFrameCanBeSubmittedFromApplicationThread;
-
-	// Geometry Data
-	//-------------
-	eae6320::Graphics::cMesh* mesh1 = nullptr;
-	eae6320::Graphics::cMesh* mesh2 = nullptr;
-
-	// Shading Data
-	//-------------
-	eae6320::Graphics::cEffect* effect1 = nullptr;
-	eae6320::Graphics::cEffect* effect2 = nullptr;
 }
 
 // Interface
@@ -132,16 +123,11 @@ void eae6320::Graphics::RenderFrame()
 	}
 
 	// Bind the shading data
-	if (effect1 != nullptr)
-		effect1->Bind();
+	if (dataRequiredToRenderFrame->effect1 != nullptr)
+		dataRequiredToRenderFrame->effect1->Bind();
 	// Draw the geometry
-	if (mesh1 != nullptr)
-		mesh1->Draw();
-	
-	if (effect2 != nullptr)
-		effect2->Bind();
-	if (mesh2 != nullptr)
-		mesh2->Draw();
+	if (dataRequiredToRenderFrame->mesh1 != nullptr)
+		dataRequiredToRenderFrame->mesh1->Draw();
 
 	Graphics::SwapBuffer();
 
@@ -149,8 +135,17 @@ void eae6320::Graphics::RenderFrame()
 	// you must make sure that it is all cleaned up and cleared out
 	// so that the struct can be re-used (i.e. so that data for a new frame can be submitted to it)
 	{
-		// (At this point in the class there isn't anything that needs to be cleaned up)
-		//dataRequiredToRenderFrame	// TODO
+		if (dataRequiredToRenderFrame->effect1 != nullptr)
+		{
+			dataRequiredToRenderFrame->effect1->DecrementReferenceCount();
+			dataRequiredToRenderFrame->effect1 = nullptr;
+		}
+
+		if (dataRequiredToRenderFrame->mesh1 != nullptr)
+		{
+			dataRequiredToRenderFrame->mesh1->DecrementReferenceCount();
+			dataRequiredToRenderFrame->mesh1 = nullptr;
+		}
 	}
 }
 
@@ -162,6 +157,22 @@ void eae6320::Graphics::SetBgColor(float color[4])
 	s_dataBeingSubmittedByApplicationThread->bgColor[1] = color[1];
 	s_dataBeingSubmittedByApplicationThread->bgColor[2] = color[2];
 	s_dataBeingSubmittedByApplicationThread->bgColor[3] = color[3];
+}
+
+void eae6320::Graphics::SetMeshData(eae6320::Graphics::cMesh* mesh)
+{
+	EAE6320_ASSERT(s_dataBeingSubmittedByApplicationThread);
+
+	s_dataBeingSubmittedByApplicationThread->mesh1 = mesh;
+	s_dataBeingSubmittedByApplicationThread->mesh1->IncrementReferenceCount();
+}
+
+void eae6320::Graphics::SetEffectData(eae6320::Graphics::cEffect* effect)
+{
+	EAE6320_ASSERT(s_dataBeingSubmittedByApplicationThread);
+
+	s_dataBeingSubmittedByApplicationThread->effect1 = effect;
+	s_dataBeingSubmittedByApplicationThread->effect1->IncrementReferenceCount();
 }
 
 // Initialize / Clean Up
@@ -210,80 +221,6 @@ eae6320::cResult eae6320::Graphics::Initialize(const sInitializationParameters& 
 
 	Graphics::InitializeBuffer(i_initializationParameters);
 
-	// Initialize the shading data
-	{
-		if (!(result = cEffect::Load(effect1)))
-		{
-			EAE6320_ASSERTF(false, "Can't initialize Graphics without the shading data");
-			return result;
-		}
-	}
-	{
-		if (!(result = cEffect::Load(effect2, "data/Shaders/Fragment/animatedColor.shader")))
-		{
-			EAE6320_ASSERTF(false, "Can't initialize Graphics without the shading data");
-			return result;
-		}
-	}
-
-	// Initialize the geometry
-	//left handed
-	eae6320::Graphics::VertexFormats::sVertex_mesh vertexData[4];
-	{
-		vertexData[0].x = 0.0f;
-		vertexData[0].y = 0.0f;
-		vertexData[0].z = 0.0f;
-
-		vertexData[1].x = 1.0f;
-		vertexData[1].y = 1.0f;
-		vertexData[1].z = 0.0f;
-
-		vertexData[2].x = 1.0f;
-		vertexData[2].y = 0.0f;
-		vertexData[2].z = 0.0f;
-
-		vertexData[3].x = 0.0f;
-		vertexData[3].y = 1.0f;
-		vertexData[3].z = 0.0f;
-	}
-	eae6320::Graphics::VertexFormats::sVertex_mesh vertexData_2[4];
-	{
-		vertexData_2[0].x = 0.0f;
-		vertexData_2[0].y = 0.0f;
-		vertexData_2[0].z = 0.0f;
-
-		vertexData_2[1].x = -1.0f;
-		vertexData_2[1].y = -1.0f;
-		vertexData_2[1].z = 0.0f;
-
-		vertexData_2[2].x = -1.0f;
-		vertexData_2[2].y = 0.0f;
-		vertexData_2[2].z = 0.0f;
-
-		vertexData_2[3].x = 0.0f;
-		vertexData_2[3].y = -1.0f;
-		vertexData_2[3].z = 0.0f;
-	}
-	uint16_t indexData_1[6] = { 0,1,2,0,3,1 };
-	uint16_t indexData_2[6] = { 0,1,2,0,3,1 };
-	{
-		if (!(result = cMesh::Load(mesh1, 6, indexData_1, 4, vertexData)))
-		{
-			EAE6320_ASSERTF(false, "Can't initialize Graphics without the geometry data");
-			return result;
-		}
-	}
-	{
-		if (!(result = cMesh::Load(mesh2, 6, indexData_2, 4, vertexData_2)))
-		{
-			EAE6320_ASSERTF(false, "Can't initialize Graphics without the geometry data");
-			return result;
-		}
-	}
-	//Log sizeof mesh
-	eae6320::Logging::OutputMessage("Effect1 size: %d", sizeof(effect1));
-	eae6320::Logging::OutputMessage("Effect2 size: %d", sizeof(effect2));
-
 	return result;
 }
 
@@ -293,26 +230,26 @@ eae6320::cResult eae6320::Graphics::CleanUp()
 
 	Graphics::CleanUpBuffer();
 
-	if (mesh1 != nullptr)
+	if (s_dataBeingSubmittedByApplicationThread->effect1 != nullptr)
 	{
-		mesh1->DecrementReferenceCount();
-		mesh1 = nullptr;
+		s_dataBeingSubmittedByApplicationThread->effect1->DecrementReferenceCount();
+		s_dataBeingSubmittedByApplicationThread->effect1 = nullptr;
 	}
-	if (mesh2 != nullptr)
+	if (s_dataBeingSubmittedByApplicationThread->mesh1 != nullptr)
 	{
-		mesh2->DecrementReferenceCount();
-		mesh2 = nullptr;
+		s_dataBeingSubmittedByApplicationThread->mesh1->DecrementReferenceCount();
+		s_dataBeingSubmittedByApplicationThread->mesh1 = nullptr;
 	}
 
-	if (effect1 != nullptr)
+	if (s_dataBeingRenderedByRenderThread->effect1 != nullptr)
 	{
-		effect1->DecrementReferenceCount();
-		effect1 = nullptr;
+		s_dataBeingRenderedByRenderThread->effect1->DecrementReferenceCount();
+		s_dataBeingRenderedByRenderThread->effect1 = nullptr;
 	}
-	if (effect2 != nullptr)
+	if (s_dataBeingRenderedByRenderThread->mesh1 != nullptr)
 	{
-		effect2->DecrementReferenceCount();
-		effect2 = nullptr;
+		s_dataBeingRenderedByRenderThread->mesh1->DecrementReferenceCount();
+		s_dataBeingRenderedByRenderThread->mesh1 = nullptr;
 	}
 
 	{

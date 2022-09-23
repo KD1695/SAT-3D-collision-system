@@ -14,12 +14,15 @@
 #if defined( EAE6320_PLATFORM_WINDOWS )
 	#include "Resource Files/Resource.h"
 #endif
+#include <Engine/Graphics/cEffect.h>
+#include <Engine/Graphics/cMesh.h>
 
 // Class Declaration
 //==================
 
 namespace eae6320
 {
+
 	class cMyGame final : public Application::iApplication
 	{
 		// Inherited Implementation
@@ -28,6 +31,9 @@ namespace eae6320
 	private:
 
 		float bg_Color[4] = { 0,1,1,1 };
+		Graphics::cEffect* effect = nullptr;
+		Graphics::cMesh* mesh = nullptr;
+
 
 		// Configuration
 		//--------------

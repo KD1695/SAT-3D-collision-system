@@ -33,9 +33,10 @@ namespace eae6320
 
 		float bg_Color[4] = { 0,1,1,1 };
 		Graphics::sMeshEffectPair meshEffectPairs1[2];
-		Graphics::sMeshEffectPair meshEffectPairs2[1];
+		Graphics::sMeshEffectPair meshEffectPairs2[2];
 		size_t meshEffectPairCount = 2;
-		bool switchMeshFlag = false;
+		bool hideMeshFlag = false;
+		bool changeShaderFlag = false;
 
 		// Configuration
 		//--------------

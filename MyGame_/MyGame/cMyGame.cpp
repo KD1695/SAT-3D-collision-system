@@ -16,10 +16,10 @@
 void eae6320::cMyGame::SubmitDataToBeRendered(const float i_elapsedSecondCount_systemTime, const float i_elapsedSecondCount_sinceLastSimulationUpdate)
 {
 	eae6320::Graphics::SetBgColor(bg_Color);
-	if (switchMeshFlag)
-	{
-		eae6320::Graphics::SetMeshEffectData(meshEffectPairs2, meshEffectPairCount-1);
-	}
+	if (changeShaderFlag)
+		eae6320::Graphics::SetMeshEffectData(meshEffectPairs2, meshEffectPairCount);
+	else if (hideMeshFlag)
+		eae6320::Graphics::SetMeshEffectData(meshEffectPairs1, meshEffectPairCount - 1);
 	else
 		eae6320::Graphics::SetMeshEffectData(meshEffectPairs1, meshEffectPairCount);
 }
@@ -27,9 +27,14 @@ void eae6320::cMyGame::SubmitDataToBeRendered(const float i_elapsedSecondCount_s
 void eae6320::cMyGame::UpdateSimulationBasedOnInput()
 {
 	if (UserInput::IsKeyPressed('Q'))
-		switchMeshFlag = true;
+		changeShaderFlag = true;
+	else if (UserInput::IsKeyPressed('W'))
+		hideMeshFlag = true;
 	else
-		switchMeshFlag = false;
+	{
+		hideMeshFlag = false;
+		changeShaderFlag = false;
+	}
 }
 
 void eae6320::cMyGame::UpdateBasedOnInput()
@@ -68,6 +73,13 @@ eae6320::cResult eae6320::cMyGame::Initialize()
 	}
 	{
 		if (!(result = eae6320::Graphics::cEffect::Load(meshEffectPairs2[0].effect, "data/Shaders/Fragment/newColor.shader")))
+		{
+			EAE6320_ASSERTF(false, "Can't initialize Graphics without the shading data");
+			return result;
+		}
+	}
+	{
+		if (!(result = eae6320::Graphics::cEffect::Load(meshEffectPairs2[1].effect)))
 		{
 			EAE6320_ASSERTF(false, "Can't initialize Graphics without the shading data");
 			return result;
@@ -128,9 +140,28 @@ eae6320::cResult eae6320::cMyGame::Initialize()
 		vertexData3[3].y = -1.0f;
 		vertexData3[3].z = 0.0f;
 	}
+	eae6320::Graphics::VertexFormats::sVertex_mesh vertexData4[4];
+	{
+		vertexData4[0].x = 0.0f;
+		vertexData4[0].y = 0.0f;
+		vertexData4[0].z = 0.0f;
+
+		vertexData4[1].x = 1.0f;
+		vertexData4[1].y = 1.0f;
+		vertexData4[1].z = 0.0f;
+
+		vertexData4[2].x = 1.0f;
+		vertexData4[2].y = 0.0f;
+		vertexData4[2].z = 0.0f;
+
+		vertexData4[3].x = 0.0f;
+		vertexData4[3].y = 1.0f;
+		vertexData4[3].z = 0.0f;
+	}
 	uint16_t indexData_1[6] = { 0,1,2,0,3,1 };
 	uint16_t indexData_2[6] = { 0,1,2,0,3,1 };
 	uint16_t indexData_3[6] = { 0,1,2,0,3,1 };
+	uint16_t indexData_4[6] = { 0,1,2,0,3,1 };
 	//load meshes
 	{
 		if (!(result = eae6320::Graphics::cMesh::Load(meshEffectPairs1[0].mesh, 6, indexData_1, 4, vertexData)))
@@ -148,6 +179,13 @@ eae6320::cResult eae6320::cMyGame::Initialize()
 	}
 	{
 		if (!(result = eae6320::Graphics::cMesh::Load(meshEffectPairs2[0].mesh, 6, indexData_3, 4, vertexData3)))
+		{
+			EAE6320_ASSERTF(false, "Can't initialize Graphics without the geometry data");
+			return result;
+		}
+	}
+	{
+		if (!(result = eae6320::Graphics::cMesh::Load(meshEffectPairs2[1].mesh, 6, indexData_4, 4, vertexData4)))
 		{
 			EAE6320_ASSERTF(false, "Can't initialize Graphics without the geometry data");
 			return result;
@@ -175,16 +213,19 @@ eae6320::cResult eae6320::cMyGame::CleanUp()
 		}
 	}
 
-	if (meshEffectPairs2[0].effect != nullptr)
+	for (size_t i = 0; i < meshEffectPairCount; i++)
 	{
-		meshEffectPairs2[0].effect->DecrementReferenceCount();
-		meshEffectPairs2[0].effect = nullptr;
-	}
+		if (meshEffectPairs2[i].effect != nullptr)
+		{
+			meshEffectPairs2[i].effect->DecrementReferenceCount();
+			meshEffectPairs2[i].effect = nullptr;
+		}
 
-	if (meshEffectPairs2[0].mesh != nullptr)
-	{
-		meshEffectPairs2[0].mesh->DecrementReferenceCount();
-		meshEffectPairs2[0].mesh = nullptr;
+		if (meshEffectPairs2[i].mesh != nullptr)
+		{
+			meshEffectPairs2[i].mesh->DecrementReferenceCount();
+			meshEffectPairs2[i].mesh = nullptr;
+		}
 	}
 
 	return Results::Success;

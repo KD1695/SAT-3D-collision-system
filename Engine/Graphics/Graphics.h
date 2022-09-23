@@ -26,6 +26,7 @@ namespace eae6320
 	namespace Graphics
 	{
 		struct sInitializationParameters;
+		struct sDataRequiredToRenderAFrame;
 		// Submission
 		//-----------
 
@@ -36,7 +37,7 @@ namespace eae6320
 		// of how the application submits the total elapsed times
 		// for the frame currently being submitted
 		void SubmitElapsedTime( const float i_elapsedSecondCount_systemTime, const float i_elapsedSecondCount_simulationTime );
-
+		//void SubmitDataToBeRendered();
 		// When the application is ready to submit data for a new frame
 		// it should call this before submitting anything
 		// (or, said another way, it is not safe to submit data for a new frame
@@ -55,7 +56,6 @@ namespace eae6320
 		void RenderFrame();
 		
 		
-		extern float bgColor[4];
 		void SetBgColor(float color[4]);
 
 		// Initialize / Clean Up

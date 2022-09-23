@@ -32,6 +32,8 @@ namespace
 	struct sDataRequiredToRenderAFrame
 	{
 		eae6320::Graphics::ConstantBufferFormats::sFrame constantData_frame;
+		float bgColor[4];
+
 	};
 	// In our class there will be two copies of the data required to render a frame:
 	//	* One of them will be in the process of being populated by the data currently being submitted by the application loop thread
@@ -89,8 +91,6 @@ eae6320::cResult eae6320::Graphics::SignalThatAllDataForAFrameHasBeenSubmitted()
 // Render
 //-------
 
-float eae6320::Graphics::bgColor[4] = { 0,0,1,1 };
-
 void eae6320::Graphics::RenderFrame()
 {
 	// Wait for the application loop to submit data to be rendered
@@ -120,12 +120,10 @@ void eae6320::Graphics::RenderFrame()
 		}
 	}
 
-	//default clear color
-	Graphics::SetupBuffer(eae6320::Graphics::bgColor);
-
 	EAE6320_ASSERT(s_dataBeingRenderedByRenderThread);
 	auto* const dataRequiredToRenderFrame = s_dataBeingRenderedByRenderThread;
 
+	Graphics::SetupBuffer(dataRequiredToRenderFrame->bgColor);
 	// Update the frame constant buffer
 	{
 		// Copy the data from the system memory that the application owns to GPU memory
@@ -158,9 +156,12 @@ void eae6320::Graphics::RenderFrame()
 
 void eae6320::Graphics::SetBgColor(float color[4])
 {
-	bgColor[0] = color[0];
-	bgColor[1] = color[1];
-	bgColor[2] = color[2];
+	EAE6320_ASSERT(s_dataBeingSubmittedByApplicationThread);
+
+	s_dataBeingSubmittedByApplicationThread->bgColor[0] = color[0];
+	s_dataBeingSubmittedByApplicationThread->bgColor[1] = color[1];
+	s_dataBeingSubmittedByApplicationThread->bgColor[2] = color[2];
+	s_dataBeingSubmittedByApplicationThread->bgColor[3] = color[3];
 }
 
 // Initialize / Clean Up
@@ -210,17 +211,15 @@ eae6320::cResult eae6320::Graphics::Initialize(const sInitializationParameters& 
 	Graphics::InitializeBuffer(i_initializationParameters);
 
 	// Initialize the shading data
-	effect1 = new cEffect();
 	{
-		if (!(result = effect1->Initialize()))
+		if (!(result = cEffect::Load(effect1)))
 		{
 			EAE6320_ASSERTF(false, "Can't initialize Graphics without the shading data");
 			return result;
 		}
 	}
-	effect2 = new cEffect();
 	{
-		if (!(result = effect2->Initialize("data/Shaders/Fragment/animatedColor.shader")))
+		if (!(result = cEffect::Load(effect2, "data/Shaders/Fragment/animatedColor.shader")))
 		{
 			EAE6320_ASSERTF(false, "Can't initialize Graphics without the shading data");
 			return result;
@@ -267,25 +266,23 @@ eae6320::cResult eae6320::Graphics::Initialize(const sInitializationParameters& 
 	}
 	uint16_t indexData_1[6] = { 0,1,2,0,3,1 };
 	uint16_t indexData_2[6] = { 0,1,2,0,3,1 };
-	mesh1 = new cMesh();
 	{
-		if (!(result = mesh1->InitializeMesh(6, indexData_1, 4, vertexData)))
+		if (!(result = cMesh::Load(mesh1, 6, indexData_1, 4, vertexData)))
 		{
 			EAE6320_ASSERTF(false, "Can't initialize Graphics without the geometry data");
 			return result;
 		}
 	}
-	mesh2 = new cMesh();
 	{
-		if (!(result = mesh2->InitializeMesh(6, indexData_2, 4, vertexData_2)))
+		if (!(result = cMesh::Load(mesh2, 6, indexData_2, 4, vertexData_2)))
 		{
 			EAE6320_ASSERTF(false, "Can't initialize Graphics without the geometry data");
 			return result;
 		}
 	}
 	//Log sizeof mesh
-	eae6320::Logging::OutputMessage("Mesh1 size: %d", sizeof(mesh1));
-	eae6320::Logging::OutputMessage("Mesh2 size: %d", sizeof(mesh2));
+	eae6320::Logging::OutputMessage("Effect1 size: %d", sizeof(effect1));
+	eae6320::Logging::OutputMessage("Effect2 size: %d", sizeof(effect2));
 
 	return result;
 }
@@ -297,14 +294,26 @@ eae6320::cResult eae6320::Graphics::CleanUp()
 	Graphics::CleanUpBuffer();
 
 	if (mesh1 != nullptr)
-		mesh1->Cleanup();
+	{
+		mesh1->DecrementReferenceCount();
+		mesh1 = nullptr;
+	}
 	if (mesh2 != nullptr)
-		mesh2->Cleanup();
+	{
+		mesh2->DecrementReferenceCount();
+		mesh2 = nullptr;
+	}
 
 	if (effect1 != nullptr)
-		effect1->CleanUp();
+	{
+		effect1->DecrementReferenceCount();
+		effect1 = nullptr;
+	}
 	if (effect2 != nullptr)
-		effect2->CleanUp();
+	{
+		effect2->DecrementReferenceCount();
+		effect2 = nullptr;
+	}
 
 	{
 		const auto result_constantBuffer_frame = s_constantBuffer_frame.CleanUp();

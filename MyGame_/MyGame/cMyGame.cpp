@@ -6,12 +6,18 @@
 #include <Engine/Asserts/Asserts.h>
 #include <Engine/UserInput/UserInput.h>
 #include <Engine/Logging/Logging.h>
+#include <Engine/Graphics/Graphics.h>
 
 // Inherited Implementation
 //=========================
 
 // Run
 //----
+
+void eae6320::cMyGame::SubmitDataToBeRendered(const float i_elapsedSecondCount_systemTime, const float i_elapsedSecondCount_sinceLastSimulationUpdate)
+{
+	eae6320::Graphics::SetBgColor(bg_Color);
+}
 
 void eae6320::cMyGame::UpdateBasedOnInput()
 {

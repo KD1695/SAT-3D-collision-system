@@ -27,6 +27,8 @@ namespace eae6320
 
 	private:
 
+		float bg_Color[4] = { 0,1,1,1 };
+
 		// Configuration
 		//--------------
 
@@ -69,6 +71,7 @@ namespace eae6320
 
 		// Run
 		//----
+		void SubmitDataToBeRendered(const float i_elapsedSecondCount_systemTime, const float i_elapsedSecondCount_sinceLastSimulationUpdate);
 
 		void UpdateBasedOnInput() final;
 

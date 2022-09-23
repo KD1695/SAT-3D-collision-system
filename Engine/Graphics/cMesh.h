@@ -2,6 +2,7 @@
 #include <Engine/Results/cResult.h>
 #include <Engine/Graphics/cVertexFormat.h>
 #include <Engine/Graphics/VertexFormats.h>
+#include <Engine/Assets/ReferenceCountedAssets.h>
 
 #ifdef EAE6320_PLATFORM_D3D
 #include <Engine/Graphics/Direct3D/Includes.h>
@@ -32,14 +33,20 @@ namespace eae6320
 			// A vertex array encapsulates the vertex data as well as the vertex input layout
 			GLuint s_vertexArrayId = 0;
 #endif
-
-		public:
-			cResult InitializeMesh(size_t indexCount, uint16_t indexData[], size_t vertexCount, eae6320::Graphics::VertexFormats::sVertex_mesh vertexData[]);
-			cResult Cleanup();
-			void Draw();
-
 			cMesh() = default;
 			~cMesh();
+			EAE6320_ASSETS_DECLAREREFERENCECOUNT()
+			cResult InitializeMesh(size_t indexCount, uint16_t indexData[], size_t vertexCount, eae6320::Graphics::VertexFormats::sVertex_mesh vertexData[]);
+			cResult Cleanup();
+
+		public:
+			void Draw();
+			static cResult Load(cMesh*& o_mesh, size_t indexCount, uint16_t indexData[], size_t vertexCount, eae6320::Graphics::VertexFormats::sVertex_mesh vertexData[]);
+			// Reference Counting
+			//-------------------
+			EAE6320_ASSETS_DECLAREDELETEDREFERENCECOUNTEDFUNCTIONS(cMesh)
+			EAE6320_ASSETS_DECLAREREFERENCECOUNTINGFUNCTIONS()
+
 		};
 	}
 }

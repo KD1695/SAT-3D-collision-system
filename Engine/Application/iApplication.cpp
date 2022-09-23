@@ -242,7 +242,9 @@ void eae6320::Application::iApplication::UpdateUntilExit()
 				const auto elapsedSecondCount_systemTime = static_cast<float>( Time::ConvertTicksToSeconds( tickCount_systemTime_elapsedAllowable ) );
 				{
 					SubmitDataToBeRendered( elapsedSecondCount_systemTime,
-						static_cast<float>( Time::ConvertTicksToSeconds( tickCount_simulationTime_elapsedButNotYetSimulated ) ) );
+						static_cast<float>( Time::ConvertTicksToSeconds( tickCount_simulationTime_elapsedButNotYetSimulated ) ));
+					//submit to graphics
+
 				}
 				// Submit the elapsed times
 				{

@@ -29,12 +29,13 @@ namespace
 
 	// This struct's data is populated at submission time;
 	// it must cache whatever is necessary in order to render a frame
+
 	struct sDataRequiredToRenderAFrame
 	{
 		eae6320::Graphics::ConstantBufferFormats::sFrame constantData_frame;
 		float bgColor[4];
-		eae6320::Graphics::cMesh* mesh1 = nullptr;
-		eae6320::Graphics::cEffect* effect1 = nullptr;
+		size_t meshEffectPairCount = 10;
+		eae6320::Graphics::sMeshEffectPair meshEffectPairs[10];
 	};
 	// In our class there will be two copies of the data required to render a frame:
 	//	* One of them will be in the process of being populated by the data currently being submitted by the application loop thread
@@ -122,29 +123,32 @@ void eae6320::Graphics::RenderFrame()
 		s_constantBuffer_frame.Update(&constantData_frame);
 	}
 
-	// Bind the shading data
-	if (dataRequiredToRenderFrame->effect1 != nullptr)
-		dataRequiredToRenderFrame->effect1->Bind();
-	// Draw the geometry
-	if (dataRequiredToRenderFrame->mesh1 != nullptr)
-		dataRequiredToRenderFrame->mesh1->Draw();
-
+	for (size_t i = 0; i < dataRequiredToRenderFrame->meshEffectPairCount ; i++)
+	{
+		// Bind the shading data
+		if (dataRequiredToRenderFrame->meshEffectPairs[i].effect != nullptr)
+			dataRequiredToRenderFrame->meshEffectPairs[i].effect->Bind();
+		// Draw the geometry
+		if (dataRequiredToRenderFrame->meshEffectPairs[i].mesh != nullptr)
+			dataRequiredToRenderFrame->meshEffectPairs[i].mesh->Draw();
+	}
 	Graphics::SwapBuffer();
 
 	// After all of the data that was submitted for this frame has been used
 	// you must make sure that it is all cleaned up and cleared out
 	// so that the struct can be re-used (i.e. so that data for a new frame can be submitted to it)
+	for (size_t i = 0; i < dataRequiredToRenderFrame->meshEffectPairCount; i++)
 	{
-		if (dataRequiredToRenderFrame->effect1 != nullptr)
+		if (dataRequiredToRenderFrame->meshEffectPairs[i].effect != nullptr)
 		{
-			dataRequiredToRenderFrame->effect1->DecrementReferenceCount();
-			dataRequiredToRenderFrame->effect1 = nullptr;
+			dataRequiredToRenderFrame->meshEffectPairs[i].effect->DecrementReferenceCount();
+			dataRequiredToRenderFrame->meshEffectPairs[i].effect = nullptr;
 		}
 
-		if (dataRequiredToRenderFrame->mesh1 != nullptr)
+		if (dataRequiredToRenderFrame->meshEffectPairs[i].mesh != nullptr)
 		{
-			dataRequiredToRenderFrame->mesh1->DecrementReferenceCount();
-			dataRequiredToRenderFrame->mesh1 = nullptr;
+			dataRequiredToRenderFrame->meshEffectPairs[i].mesh->DecrementReferenceCount();
+			dataRequiredToRenderFrame->meshEffectPairs[i].mesh = nullptr;
 		}
 	}
 }
@@ -159,20 +163,17 @@ void eae6320::Graphics::SetBgColor(float color[4])
 	s_dataBeingSubmittedByApplicationThread->bgColor[3] = color[3];
 }
 
-void eae6320::Graphics::SetMeshData(eae6320::Graphics::cMesh* mesh)
+void eae6320::Graphics::SetMeshEffectData(eae6320::Graphics::sMeshEffectPair meshEffectPairs[], size_t count)
 {
 	EAE6320_ASSERT(s_dataBeingSubmittedByApplicationThread);
 
-	s_dataBeingSubmittedByApplicationThread->mesh1 = mesh;
-	s_dataBeingSubmittedByApplicationThread->mesh1->IncrementReferenceCount();
-}
-
-void eae6320::Graphics::SetEffectData(eae6320::Graphics::cEffect* effect)
-{
-	EAE6320_ASSERT(s_dataBeingSubmittedByApplicationThread);
-
-	s_dataBeingSubmittedByApplicationThread->effect1 = effect;
-	s_dataBeingSubmittedByApplicationThread->effect1->IncrementReferenceCount();
+	s_dataBeingSubmittedByApplicationThread->meshEffectPairCount = count;
+	for (size_t i = 0; i < count; i++)
+	{
+		s_dataBeingSubmittedByApplicationThread->meshEffectPairs[i] = meshEffectPairs[i];
+		s_dataBeingSubmittedByApplicationThread->meshEffectPairs[i].effect->IncrementReferenceCount();
+		s_dataBeingSubmittedByApplicationThread->meshEffectPairs[i].mesh->IncrementReferenceCount();
+	}
 }
 
 // Initialize / Clean Up
@@ -230,26 +231,34 @@ eae6320::cResult eae6320::Graphics::CleanUp()
 
 	Graphics::CleanUpBuffer();
 
-	if (s_dataBeingSubmittedByApplicationThread->effect1 != nullptr)
+	for (size_t i = 0; i < s_dataBeingSubmittedByApplicationThread->meshEffectPairCount; i++)
 	{
-		s_dataBeingSubmittedByApplicationThread->effect1->DecrementReferenceCount();
-		s_dataBeingSubmittedByApplicationThread->effect1 = nullptr;
-	}
-	if (s_dataBeingSubmittedByApplicationThread->mesh1 != nullptr)
-	{
-		s_dataBeingSubmittedByApplicationThread->mesh1->DecrementReferenceCount();
-		s_dataBeingSubmittedByApplicationThread->mesh1 = nullptr;
+		if (s_dataBeingSubmittedByApplicationThread->meshEffectPairs[i].effect != nullptr)
+		{
+			s_dataBeingSubmittedByApplicationThread->meshEffectPairs[i].effect->DecrementReferenceCount();
+			s_dataBeingSubmittedByApplicationThread->meshEffectPairs[i].effect = nullptr;
+		}
+
+		if (s_dataBeingSubmittedByApplicationThread->meshEffectPairs[i].mesh != nullptr)
+		{
+			s_dataBeingSubmittedByApplicationThread->meshEffectPairs[i].mesh->DecrementReferenceCount();
+			s_dataBeingSubmittedByApplicationThread->meshEffectPairs[i].mesh = nullptr;
+		}
 	}
 
-	if (s_dataBeingRenderedByRenderThread->effect1 != nullptr)
+	for (size_t i = 0; i < s_dataBeingRenderedByRenderThread->meshEffectPairCount; i++)
 	{
-		s_dataBeingRenderedByRenderThread->effect1->DecrementReferenceCount();
-		s_dataBeingRenderedByRenderThread->effect1 = nullptr;
-	}
-	if (s_dataBeingRenderedByRenderThread->mesh1 != nullptr)
-	{
-		s_dataBeingRenderedByRenderThread->mesh1->DecrementReferenceCount();
-		s_dataBeingRenderedByRenderThread->mesh1 = nullptr;
+		if (s_dataBeingRenderedByRenderThread->meshEffectPairs[i].effect != nullptr)
+		{
+			s_dataBeingRenderedByRenderThread->meshEffectPairs[i].effect->DecrementReferenceCount();
+			s_dataBeingRenderedByRenderThread->meshEffectPairs[i].effect = nullptr;
+		}
+
+		if (s_dataBeingRenderedByRenderThread->meshEffectPairs[i].mesh != nullptr)
+		{
+			s_dataBeingRenderedByRenderThread->meshEffectPairs[i].mesh->DecrementReferenceCount();
+			s_dataBeingRenderedByRenderThread->meshEffectPairs[i].mesh = nullptr;
+		}
 	}
 
 	{

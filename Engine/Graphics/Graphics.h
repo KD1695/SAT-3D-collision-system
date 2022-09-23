@@ -29,6 +29,11 @@ namespace eae6320
 		class cEffect;
 		struct sInitializationParameters;
 		struct sDataRequiredToRenderAFrame;
+		struct sMeshEffectPair
+		{
+			eae6320::Graphics::cMesh* mesh = nullptr;
+			eae6320::Graphics::cEffect* effect = nullptr;
+		};
 		// Submission
 		//-----------
 
@@ -59,8 +64,7 @@ namespace eae6320
 		
 		
 		void SetBgColor(float color[4]);
-		void SetMeshData(cMesh* mesh);
-		void SetEffectData(cEffect* effect);
+		void SetMeshEffectData(sMeshEffectPair meshEffectPairs[], size_t count);
 
 		// Initialize / Clean Up
 		//----------------------

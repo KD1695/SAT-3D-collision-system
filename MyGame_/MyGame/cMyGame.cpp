@@ -6,6 +6,7 @@
 #include <Engine/Asserts/Asserts.h>
 #include <Engine/UserInput/UserInput.h>
 #include <Engine/Logging/Logging.h>
+#include <Engine/Graphics/Graphics.cpp>
 
 // Inherited Implementation
 //=========================
@@ -17,11 +18,13 @@ void eae6320::cMyGame::SubmitDataToBeRendered(const float i_elapsedSecondCount_s
 {
 	eae6320::Graphics::SetBgColor(bg_Color);
 	if (changeShaderFlag)
-		eae6320::Graphics::SetMeshEffectData(meshEffectPairs2, meshEffectPairCount);
+	{
+		eae6320::Graphics::SetMeshEffectData(gameObjects2, objectCount);
+	}
 	else if (hideMeshFlag)
-		eae6320::Graphics::SetMeshEffectData(meshEffectPairs1, meshEffectPairCount - 1);
+		eae6320::Graphics::SetMeshEffectData(gameObjects1, objectCount - 1);
 	else
-		eae6320::Graphics::SetMeshEffectData(meshEffectPairs1, meshEffectPairCount);
+		eae6320::Graphics::SetMeshEffectData(gameObjects1, objectCount);
 }
 
 void eae6320::cMyGame::UpdateSimulationBasedOnInput()
@@ -55,36 +58,6 @@ eae6320::cResult eae6320::cMyGame::Initialize()
 {
 	eae6320::Logging::OutputMessage("Initializing Game...");
 	auto result = eae6320::Results::Success;
-	
-	//load effects
-	{
-		if (!(result = eae6320::Graphics::cEffect::Load(meshEffectPairs1[0].effect, "data/Shaders/Fragment/animatedColor.shader")))
-		{
-			EAE6320_ASSERTF(false, "Can't initialize Graphics without the shading data");
-			return result;
-		}
-	}
-	{
-		if (!(result = eae6320::Graphics::cEffect::Load(meshEffectPairs1[1].effect)))
-		{
-			EAE6320_ASSERTF(false, "Can't initialize Graphics without the shading data");
-			return result;
-		}
-	}
-	{
-		if (!(result = eae6320::Graphics::cEffect::Load(meshEffectPairs2[0].effect, "data/Shaders/Fragment/newColor.shader")))
-		{
-			EAE6320_ASSERTF(false, "Can't initialize Graphics without the shading data");
-			return result;
-		}
-	}
-	{
-		if (!(result = eae6320::Graphics::cEffect::Load(meshEffectPairs2[1].effect)))
-		{
-			EAE6320_ASSERTF(false, "Can't initialize Graphics without the shading data");
-			return result;
-		}
-	}
 
 	eae6320::Graphics::VertexFormats::sVertex_mesh vertexData[4];
 	{
@@ -162,35 +135,37 @@ eae6320::cResult eae6320::cMyGame::Initialize()
 	uint16_t indexData_2[6] = { 0,1,2,0,3,1 };
 	uint16_t indexData_3[6] = { 0,1,2,0,3,1 };
 	uint16_t indexData_4[6] = { 0,1,2,0,3,1 };
-	//load meshes
+
+	//init gameObjects
 	{
-		if (!(result = eae6320::Graphics::cMesh::Load(meshEffectPairs1[0].mesh, 6, indexData_1, 4, vertexData)))
+		if (!(result = gameObjects1[0].InitializeMeshEffect(6, indexData_1, 4, vertexData, "data/Shaders/Fragment/animatedColor.shader")))
 		{
-			EAE6320_ASSERTF(false, "Can't initialize Graphics without the geometry data");
+			EAE6320_ASSERTF(false, "Failed Initializing GameObject");
 			return result;
 		}
 	}
 	{
-		if (!(result = eae6320::Graphics::cMesh::Load(meshEffectPairs1[1].mesh, 6, indexData_2, 4, vertexData2)))
+		if (!(result = gameObjects1[1].InitializeMeshEffect(6, indexData_2, 4, vertexData2)))
 		{
-			EAE6320_ASSERTF(false, "Can't initialize Graphics without the geometry data");
+			EAE6320_ASSERTF(false, "Failed Initializing GameObject");
 			return result;
 		}
 	}
 	{
-		if (!(result = eae6320::Graphics::cMesh::Load(meshEffectPairs2[0].mesh, 6, indexData_3, 4, vertexData3)))
+		if (!(result = gameObjects2[0].InitializeMeshEffect(6, indexData_3, 4, vertexData3, "data/Shaders/Fragment/newColor.shader")))
 		{
-			EAE6320_ASSERTF(false, "Can't initialize Graphics without the geometry data");
+			EAE6320_ASSERTF(false, "Failed Initializing GameObject");
 			return result;
 		}
 	}
 	{
-		if (!(result = eae6320::Graphics::cMesh::Load(meshEffectPairs2[1].mesh, 6, indexData_4, 4, vertexData4)))
+		if (!(result = gameObjects2[1].InitializeMeshEffect(6, indexData_4, 4, vertexData4)))
 		{
-			EAE6320_ASSERTF(false, "Can't initialize Graphics without the geometry data");
+			EAE6320_ASSERTF(false, "Failed Initializing GameObject");
 			return result;
 		}
 	}
+
 	return result;
 }
 
@@ -198,34 +173,14 @@ eae6320::cResult eae6320::cMyGame::CleanUp()
 {
 	eae6320::Logging::OutputMessage("Cleaning up Game...");
 
-	for (size_t i = 0; i < meshEffectPairCount; i++)
+	for (size_t i = 0; i < objectCount; i++)
 	{
-		if (meshEffectPairs1[i].effect != nullptr)
-		{
-			meshEffectPairs1[i].effect->DecrementReferenceCount();
-			meshEffectPairs1[i].effect = nullptr;
-		}
-
-		if (meshEffectPairs1[i].mesh != nullptr)
-		{
-			meshEffectPairs1[i].mesh->DecrementReferenceCount();
-			meshEffectPairs1[i].mesh = nullptr;
-		}
+		gameObjects1[i].CleanUp();
 	}
 
-	for (size_t i = 0; i < meshEffectPairCount; i++)
+	for (size_t i = 0; i < objectCount; i++)
 	{
-		if (meshEffectPairs2[i].effect != nullptr)
-		{
-			meshEffectPairs2[i].effect->DecrementReferenceCount();
-			meshEffectPairs2[i].effect = nullptr;
-		}
-
-		if (meshEffectPairs2[i].mesh != nullptr)
-		{
-			meshEffectPairs2[i].mesh->DecrementReferenceCount();
-			meshEffectPairs2[i].mesh = nullptr;
-		}
+		gameObjects2[i].CleanUp();
 	}
 
 	return Results::Success;

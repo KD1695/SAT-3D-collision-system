@@ -17,7 +17,6 @@
 
 // Static Data
 //============
-
 namespace
 {
 	struct sInitializationParameters;
@@ -29,13 +28,18 @@ namespace
 
 	// This struct's data is populated at submission time;
 	// it must cache whatever is necessary in order to render a frame
+	struct sMeshEffectPair
+	{
+		eae6320::Graphics::cMesh* mesh = nullptr;
+		eae6320::Graphics::cEffect* effect = nullptr;
+	};
 
 	struct sDataRequiredToRenderAFrame
 	{
+		sMeshEffectPair meshEffectPairs[10];
 		eae6320::Graphics::ConstantBufferFormats::sFrame constantData_frame;
 		float bgColor[4];
 		size_t meshEffectPairCount = 10;
-		eae6320::Graphics::sMeshEffectPair meshEffectPairs[10];
 	};
 	// In our class there will be two copies of the data required to render a frame:
 	//	* One of them will be in the process of being populated by the data currently being submitted by the application loop thread
@@ -163,16 +167,17 @@ void eae6320::Graphics::SetBgColor(float color[4])
 	s_dataBeingSubmittedByApplicationThread->bgColor[3] = color[3];
 }
 
-void eae6320::Graphics::SetMeshEffectData(eae6320::Graphics::sMeshEffectPair meshEffectPairs[], size_t count)
+void eae6320::Graphics::SetMeshEffectData(Components::GameObject gameObjects[], size_t count)
 {
 	EAE6320_ASSERT(s_dataBeingSubmittedByApplicationThread);
 
 	s_dataBeingSubmittedByApplicationThread->meshEffectPairCount = count;
 	for (size_t i = 0; i < count; i++)
 	{
-		s_dataBeingSubmittedByApplicationThread->meshEffectPairs[i] = meshEffectPairs[i];
-		s_dataBeingSubmittedByApplicationThread->meshEffectPairs[i].effect->IncrementReferenceCount();
+		s_dataBeingSubmittedByApplicationThread->meshEffectPairs[i].mesh = gameObjects[i].GetMesh();
 		s_dataBeingSubmittedByApplicationThread->meshEffectPairs[i].mesh->IncrementReferenceCount();
+		s_dataBeingSubmittedByApplicationThread->meshEffectPairs[i].effect = gameObjects[i].GetEffect();
+		s_dataBeingSubmittedByApplicationThread->meshEffectPairs[i].effect->IncrementReferenceCount();
 	}
 }
 

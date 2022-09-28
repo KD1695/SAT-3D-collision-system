@@ -13,6 +13,7 @@
 #include <cstdint>
 #include <Engine/Results/Results.h>
 #include <Engine/Graphics/FrameBuffer.h>
+#include <Engine/Components/GameObject.h>
 
 #if defined( EAE6320_PLATFORM_WINDOWS )
 	#include <Engine/Windows/Includes.h>
@@ -29,11 +30,6 @@ namespace eae6320
 		class cEffect;
 		struct sInitializationParameters;
 		struct sDataRequiredToRenderAFrame;
-		struct sMeshEffectPair
-		{
-			eae6320::Graphics::cMesh* mesh = nullptr;
-			eae6320::Graphics::cEffect* effect = nullptr;
-		};
 		// Submission
 		//-----------
 
@@ -64,7 +60,7 @@ namespace eae6320
 		
 		
 		void SetBgColor(float color[4]);
-		void SetMeshEffectData(sMeshEffectPair meshEffectPairs[], size_t count);
+		void SetMeshEffectData(Components::GameObject gameObjects[], size_t count);
 
 		// Initialize / Clean Up
 		//----------------------

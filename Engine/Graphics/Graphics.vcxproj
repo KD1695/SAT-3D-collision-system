@@ -122,6 +122,9 @@
     <ProjectReference Include="..\..\External\OpenGlExtensions\OpenGlExtensions.vcxproj">
       <Project>{433f6d20-943a-4d7b-bffe-bc9dfc932e6e}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\Components\Components.vcxproj">
+      <Project>{e61f4c8f-ed49-4007-895b-0dfb1b13b68f}</Project>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

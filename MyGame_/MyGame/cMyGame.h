@@ -15,9 +15,8 @@
 	#include "Resource Files/Resource.h"
 #endif
 
-#include <Engine/Graphics/Graphics.h>
-#include <Engine/Graphics/cEffect.h>
-#include <Engine/Graphics/cMesh.h>
+#include<Engine/Components/GameObject.h>
+#include<Engine/Graphics/Graphics.h>
 
 // Class Declaration
 //==================
@@ -32,9 +31,9 @@ namespace eae6320
 	private:
 
 		float bg_Color[4] = { 0,1,1,1 };
-		Graphics::sMeshEffectPair meshEffectPairs1[2];
-		Graphics::sMeshEffectPair meshEffectPairs2[2];
-		size_t meshEffectPairCount = 2;
+		eae6320::Components::GameObject gameObjects1[2];
+		eae6320::Components::GameObject gameObjects2[2];
+		size_t objectCount = 2;
 		bool hideMeshFlag = false;
 		bool changeShaderFlag = false;
 

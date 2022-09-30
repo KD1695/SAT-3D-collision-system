@@ -38,6 +38,7 @@ namespace
 	{
 		sMeshEffectPair meshEffectPairs[10];
 		eae6320::Graphics::ConstantBufferFormats::sFrame constantData_frame;
+		eae6320::Graphics::ConstantBufferFormats::sDrawCall constantData_drawCall[10];
 		float bgColor[4];
 		size_t meshEffectPairCount = 10;
 	};
@@ -134,7 +135,11 @@ void eae6320::Graphics::RenderFrame()
 			dataRequiredToRenderFrame->meshEffectPairs[i].effect->Bind();
 		// Draw the geometry
 		if (dataRequiredToRenderFrame->meshEffectPairs[i].mesh != nullptr)
+		{
+			auto& constantData_drawCall = dataRequiredToRenderFrame->constantData_drawCall[i];
+			s_constantBuffer_frame.Update(&constantData_drawCall);
 			dataRequiredToRenderFrame->meshEffectPairs[i].mesh->Draw();
+		}
 	}
 	Graphics::SwapBuffer();
 
@@ -178,6 +183,8 @@ void eae6320::Graphics::SetMeshEffectData(Components::GameObject gameObjects[], 
 		s_dataBeingSubmittedByApplicationThread->meshEffectPairs[i].mesh->IncrementReferenceCount();
 		s_dataBeingSubmittedByApplicationThread->meshEffectPairs[i].effect = gameObjects[i].GetEffect();
 		s_dataBeingSubmittedByApplicationThread->meshEffectPairs[i].effect->IncrementReferenceCount();
+
+		s_dataBeingSubmittedByApplicationThread->constantData_drawCall[i].g_transform_localToWorld = gameObjects[i].GetTransform();
 	}
 }
 

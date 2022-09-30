@@ -24,6 +24,11 @@
   <ItemGroup>
     <ClCompile Include="GameObject.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Physics\Physics.vcxproj">
+      <Project>{30e6bb9f-138d-4b44-9733-869263f7bad5}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>

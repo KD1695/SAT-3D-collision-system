@@ -1,23 +1,22 @@
 #include <Engine/Components/GameObject.h>
-
-void eae6320::Components::GameObject::SetPosition(sVector3 _position)
-{
-	position.x = _position.x;
-	position.y = _position.y;
-	position.z = _position.z;
-}
+#include <Engine/Logging/Logging.h>
 
 eae6320::Components::GameObject::~GameObject()
 {
 	CleanUp();
 }
 
-eae6320::Components::sVector3 eae6320::Components::GameObject::GetPosition()
+void eae6320::Components::GameObject::SetVelocity(Math::sVector velocity)
 {
-	return position;
+	rigidBodyState.velocity = velocity;
 }
 
-eae6320::cResult eae6320::Components::GameObject::InitializeMeshEffect(size_t indexCount, uint16_t indexData[], size_t vertexCount, eae6320::Graphics::VertexFormats::sVertex_mesh vertexData[], 
+eae6320::Math::cMatrix_transformation eae6320::Components::GameObject::GetTransform()
+{
+	return transform;
+}
+
+eae6320::cResult eae6320::Components::GameObject::InitializeMeshEffect(size_t _indexCount, uint16_t _indexData[], size_t _vertexCount, eae6320::Graphics::VertexFormats::sVertex_mesh _vertexData[],
 	std::string fragmentShaderPath, std::string vertexShaderPath)
 {
 	auto result = Results::Success;
@@ -33,12 +32,17 @@ eae6320::cResult eae6320::Components::GameObject::InitializeMeshEffect(size_t in
 
 	//load mesh
 	{
-		if (!(result = eae6320::Graphics::cMesh::Load(mesh, indexCount, indexData, vertexCount, vertexData)))
+		if (!(result = eae6320::Graphics::cMesh::Load(mesh, _indexCount, _indexData, _vertexCount, _vertexData)))
 		{
 			EAE6320_ASSERTF(false, "Can't initialize Graphics without the geometry data");
 			return result;
 		}
 	}
+	//save mesh geometry data
+	indexCount = _indexCount;
+	indexData = _indexData;
+	vertexCount = _vertexCount;
+	vertexData = _vertexData;
 
 	return result;
 }
@@ -56,6 +60,12 @@ void eae6320::Components::GameObject::CleanUp()
 		mesh->DecrementReferenceCount();
 		mesh = nullptr;
 	}
+}
+
+void eae6320::Components::GameObject::Update(const float i_secondCountToIntegrate)
+{
+	transform = rigidBodyState.PredictFutureTransform(i_secondCountToIntegrate);
+	rigidBodyState.Update(i_secondCountToIntegrate);
 }
 
 eae6320::Graphics::cMesh* eae6320::Components::GameObject::GetMesh()

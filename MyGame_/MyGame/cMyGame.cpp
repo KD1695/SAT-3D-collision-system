@@ -17,27 +17,33 @@
 void eae6320::cMyGame::SubmitDataToBeRendered(const float i_elapsedSecondCount_systemTime, const float i_elapsedSecondCount_sinceLastSimulationUpdate)
 {
 	eae6320::Graphics::SetBgColor(bg_Color);
-	if (changeShaderFlag)
-	{
-		eae6320::Graphics::SetMeshEffectData(gameObjects2, objectCount);
-	}
-	else if (hideMeshFlag)
-		eae6320::Graphics::SetMeshEffectData(gameObjects1, objectCount - 1);
-	else
-		eae6320::Graphics::SetMeshEffectData(gameObjects1, objectCount);
+	eae6320::Graphics::SetMeshEffectData(gameObjects1, objectCount-1);
 }
 
 void eae6320::cMyGame::UpdateSimulationBasedOnInput()
 {
-	if (UserInput::IsKeyPressed('Q'))
-		changeShaderFlag = true;
-	else if (UserInput::IsKeyPressed('W'))
-		hideMeshFlag = true;
-	else
+	if (UserInput::IsKeyPressed('A'))
 	{
-		hideMeshFlag = false;
-		changeShaderFlag = false;
+		//move left
+		gameObjects1[0].SetVelocity(Math::sVector(-1, 0, 0));
 	}
+	else if (UserInput::IsKeyPressed('D'))
+	{
+		//move right
+		gameObjects1[0].SetVelocity(Math::sVector(1, 0, 0));
+	}
+	else if (UserInput::IsKeyPressed('W'))
+	{
+		//move up
+		gameObjects1[0].SetVelocity(Math::sVector(0, 1, 0));
+	}
+	else if (UserInput::IsKeyPressed('S'))
+	{
+		//move down
+		gameObjects1[0].SetVelocity(Math::sVector(0, -1, 0));
+	}
+	else
+		gameObjects1[0].SetVelocity(Math::sVector(0, 0, 0));
 }
 
 void eae6320::cMyGame::UpdateBasedOnInput()
@@ -54,6 +60,11 @@ void eae6320::cMyGame::UpdateBasedOnInput()
 // Initialize / Clean Up
 //----------------------
 
+void eae6320::cMyGame::UpdateBasedOnTime(const float i_elapsedSecondCount_sinceLastUpdate)
+{
+	gameObjects1[0].Update(i_elapsedSecondCount_sinceLastUpdate);
+}
+
 eae6320::cResult eae6320::cMyGame::Initialize()
 {
 	eae6320::Logging::OutputMessage("Initializing Game...");
@@ -65,16 +76,16 @@ eae6320::cResult eae6320::cMyGame::Initialize()
 		vertexData[0].y = 0.0f;
 		vertexData[0].z = 0.0f;
 
-		vertexData[1].x = 1.0f;
-		vertexData[1].y = 1.0f;
+		vertexData[1].x = 0.5f;
+		vertexData[1].y = 0.5f;
 		vertexData[1].z = 0.0f;
 
-		vertexData[2].x = 1.0f;
+		vertexData[2].x = 0.5f;
 		vertexData[2].y = 0.0f;
 		vertexData[2].z = 0.0f;
 
 		vertexData[3].x = 0.0f;
-		vertexData[3].y = 1.0f;
+		vertexData[3].y = 0.5f;
 		vertexData[3].z = 0.0f;
 	}
 	eae6320::Graphics::VertexFormats::sVertex_mesh vertexData2[4];
@@ -83,16 +94,16 @@ eae6320::cResult eae6320::cMyGame::Initialize()
 		vertexData2[0].y = 0.0f;
 		vertexData2[0].z = 0.0f;
 
-		vertexData2[1].x = -1.0f;
-		vertexData2[1].y = -1.0f;
+		vertexData2[1].x = -0.5f;
+		vertexData2[1].y = -0.5f;
 		vertexData2[1].z = 0.0f;
 
-		vertexData2[2].x = -1.0f;
+		vertexData2[2].x = -0.5f;
 		vertexData2[2].y = 0.0f;
 		vertexData2[2].z = 0.0f;
 
 		vertexData2[3].x = 0.0f;
-		vertexData2[3].y = -1.0f;
+		vertexData2[3].y = -0.5f;
 		vertexData2[3].z = 0.0f;
 	}
 	eae6320::Graphics::VertexFormats::sVertex_mesh vertexData3[4];
@@ -138,7 +149,7 @@ eae6320::cResult eae6320::cMyGame::Initialize()
 
 	//init gameObjects
 	{
-		if (!(result = gameObjects1[0].InitializeMeshEffect(6, indexData_1, 4, vertexData, "data/Shaders/Fragment/animatedColor.shader")))
+		if (!(result = gameObjects1[0].InitializeMeshEffect(6, indexData_1, 4, vertexData, "data/Shaders/Fragment/newColor.shader")))
 		{
 			EAE6320_ASSERTF(false, "Failed Initializing GameObject");
 			return result;

@@ -73,6 +73,13 @@ eae6320::Graphics::cMesh* eae6320::Components::GameObject::GetMesh()
 	return mesh;
 }
 
+void eae6320::Components::GameObject::SetMesh(Graphics::cMesh* _mesh)
+{
+	mesh->DecrementReferenceCount();
+	mesh = _mesh;
+	mesh->IncrementReferenceCount();
+}
+
 eae6320::Graphics::cEffect* eae6320::Components::GameObject::GetEffect()
 {
 	return effect;

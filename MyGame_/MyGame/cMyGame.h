@@ -33,11 +33,12 @@ namespace eae6320
 
 		float bg_Color[4] = { 0,1,1,1 };
 		eae6320::Components::Camera camera;
-		eae6320::Components::GameObject gameObjects1[2];
-		eae6320::Components::GameObject gameObjects2[2];
-		size_t objectCount = 2;
-		bool hideMeshFlag = false;
-		bool changeShaderFlag = false;
+		eae6320::Components::GameObject gameObject1;
+		eae6320::Components::GameObject gameObject2;
+		eae6320::Graphics::cMesh* meshReplace;
+		eae6320::Graphics::cMesh* meshMain;
+		size_t objectCount = 1;
+		bool changeMeshFlag = false;
 
 		// Configuration
 		//--------------

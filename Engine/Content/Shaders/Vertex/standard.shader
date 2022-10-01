@@ -26,6 +26,11 @@ cbuffer g_constantBuffer_frame : register( b0 )
 	float2 g_padding;
 };
 
+cbuffer g_constantBuffer_drawCall : register( b2 )
+{
+  float4x4 g_transform_localToWorld;
+};
+
 // Entry Point
 //============
 
@@ -55,7 +60,7 @@ void main(
 		// This will be done in a future assignment.
 		// For now, however, local space is treated as if it is the same as world space.
 		float4 vertexPosition_local = float4( i_vertexPosition_local, 1.0 );
-		vertexPosition_world = vertexPosition_local;
+		vertexPosition_world = mul( g_transform_localToWorld, vertexPosition_local );
 	}
 	// Calculate the position of this vertex projected onto the display
 	{
@@ -80,6 +85,11 @@ layout( std140, binding = 0 ) uniform g_constantBuffer_frame
 	float g_elapsedSecondCount_simulationTime;
 	// For vec4 alignment
 	vec2 g_padding;
+};
+
+layout( std140, binding = 2 ) uniform g_constantBuffer_drawCall
+{
+  mat4 g_transform_localToWorld;
 };
 
 // Input
@@ -109,7 +119,7 @@ void main()
 		// This will be done in a future assignment.
 		// For now, however, local space is treated as if it is the same as world space.
 		vec4 vertexPosition_local = vec4( i_vertexPosition_local, 1.0 );
-		vertexPosition_world = vertexPosition_local;
+		vertexPosition_world = g_transform_localToWorld * vertexPosition_local;
 	}
 	// Calculate the position of this vertex projected onto the display
 	{

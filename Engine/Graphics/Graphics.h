@@ -14,6 +14,7 @@
 #include <Engine/Results/Results.h>
 #include <Engine/Graphics/FrameBuffer.h>
 #include <Engine/Components/GameObject.h>
+#include <Engine/Components/Camera.h>
 
 #if defined( EAE6320_PLATFORM_WINDOWS )
 	#include <Engine/Windows/Includes.h>
@@ -60,7 +61,7 @@ namespace eae6320
 		
 		
 		void SetBgColor(float color[4]);
-		void SetMeshEffectData(Components::GameObject gameObjects[], size_t count);
+		void SetMeshEffectData(Components::Camera camera, Components::GameObject gameObjects[], size_t count);
 
 		// Initialize / Clean Up
 		//----------------------

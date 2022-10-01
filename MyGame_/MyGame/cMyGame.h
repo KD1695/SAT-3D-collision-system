@@ -16,6 +16,7 @@
 #endif
 
 #include<Engine/Components/GameObject.h>
+#include<Engine/Components/Camera.h>
 #include<Engine/Graphics/Graphics.h>
 
 // Class Declaration
@@ -31,6 +32,7 @@ namespace eae6320
 	private:
 
 		float bg_Color[4] = { 0,1,1,1 };
+		eae6320::Components::Camera camera;
 		eae6320::Components::GameObject gameObjects1[2];
 		eae6320::Components::GameObject gameObjects2[2];
 		size_t objectCount = 2;

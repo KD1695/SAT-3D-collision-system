@@ -22,6 +22,11 @@ cbuffer g_constantBuffer_frame : register( b0 )
 	float2 g_padding;
 };
 
+cbuffer g_constantBuffer_drawCall : register( b2 )
+{
+  float4x4 g_transform_localToWorld;
+};
+
 // Entry Point
 //============
 
@@ -46,7 +51,7 @@ void main(
 	// Output random fading red
 	o_color = float4(
 		// RGB (color)
-		variableValue, 0.0, 0.0,
+		variableValue, 0.0, 1.0,
 		// Alpha (opacity)
 		1.0 );
 }
@@ -65,6 +70,11 @@ layout( std140, binding = 0 ) uniform g_constantBuffer_frame
 	float g_elapsedSecondCount_simulationTime;
 	// For vec4 alignment
 	vec2 g_padding;
+};
+
+layout( std140, binding = 2 ) uniform g_constantBuffer_drawCall
+{
+  mat4 g_transform_localToWorld;
 };
 
 // Output

@@ -22,6 +22,7 @@ namespace
 	struct sInitializationParameters;
 	// Constant buffer object
 	eae6320::Graphics::cConstantBuffer s_constantBuffer_frame(eae6320::Graphics::ConstantBufferTypes::Frame);
+	eae6320::Graphics::cConstantBuffer s_constantBuffer_drawCall(eae6320::Graphics::ConstantBufferTypes::DrawCall);
 	
 	// Submission Data
 	//----------------
@@ -137,7 +138,7 @@ void eae6320::Graphics::RenderFrame()
 		if (dataRequiredToRenderFrame->meshEffectPairs[i].mesh != nullptr)
 		{
 			auto& constantData_drawCall = dataRequiredToRenderFrame->constantData_drawCall[i];
-			s_constantBuffer_frame.Update(&constantData_drawCall);
+			s_constantBuffer_drawCall.Update(&constantData_drawCall);
 			dataRequiredToRenderFrame->meshEffectPairs[i].mesh->Draw();
 		}
 	}
@@ -172,9 +173,13 @@ void eae6320::Graphics::SetBgColor(float color[4])
 	s_dataBeingSubmittedByApplicationThread->bgColor[3] = color[3];
 }
 
-void eae6320::Graphics::SetMeshEffectData(Components::GameObject gameObjects[], size_t count)
+void eae6320::Graphics::SetMeshEffectData(Components::Camera camera, Components::GameObject gameObjects[], size_t count)
 {
 	EAE6320_ASSERT(s_dataBeingSubmittedByApplicationThread);
+
+	//set data from camera to frame buffer
+	s_dataBeingSubmittedByApplicationThread->constantData_frame.g_transform_worldToCamera = Math::cMatrix_transformation::CreateWorldToCameraTransform(camera.GetLocalTransform());
+	s_dataBeingSubmittedByApplicationThread->constantData_frame.g_transform_cameraToProjected = camera.GetCameraToProjectedTransform();
 
 	s_dataBeingSubmittedByApplicationThread->meshEffectPairCount = count;
 	for (size_t i = 0; i < count; i++)
@@ -214,6 +219,20 @@ eae6320::cResult eae6320::Graphics::Initialize(const sInitializationParameters& 
 		else
 		{
 			EAE6320_ASSERTF(false, "Can't initialize Graphics without frame constant buffer");
+			return result;
+		}
+
+		if (result = s_constantBuffer_drawCall.Initialize())
+		{
+			// There is only a single frame constant buffer that is reused
+			// and so it can be bound at initialization time and never unbound
+			s_constantBuffer_drawCall.Bind(
+				// In our class both vertex and fragment shaders use per-frame constant data
+				static_cast<uint_fast8_t>(eShaderType::Vertex) | static_cast<uint_fast8_t>(eShaderType::Fragment));
+		}
+		else
+		{
+			EAE6320_ASSERTF(false, "Can't initialize Graphics without drawCall constant buffer");
 			return result;
 		}
 	}
@@ -281,6 +300,15 @@ eae6320::cResult eae6320::Graphics::CleanUp()
 			if (result)
 			{
 				result = result_constantBuffer_frame;
+			}
+		}
+		const auto result_constantBuffer_drawCall = s_constantBuffer_drawCall.CleanUp();
+		if (!result_constantBuffer_drawCall)
+		{
+			EAE6320_ASSERT(false);
+			if (result)
+			{
+				result = result_constantBuffer_drawCall;
 			}
 		}
 	}

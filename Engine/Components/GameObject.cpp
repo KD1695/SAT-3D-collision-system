@@ -38,11 +38,6 @@ eae6320::cResult eae6320::Components::GameObject::InitializeMeshEffect(size_t _i
 			return result;
 		}
 	}
-	//save mesh geometry data
-	indexCount = _indexCount;
-	indexData = _indexData;
-	vertexCount = _vertexCount;
-	vertexData = _vertexData;
 
 	return result;
 }

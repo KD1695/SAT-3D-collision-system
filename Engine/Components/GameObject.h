@@ -15,13 +15,6 @@ namespace eae6320
 			eae6320::Graphics::cMesh* mesh = nullptr;
 			eae6320::Graphics::cEffect* effect = nullptr;
 			
-			// Geometry Data
-			//--------------
-			size_t indexCount = 0;
-			uint16_t* indexData = nullptr;
-			size_t vertexCount = 0;
-			eae6320::Graphics::VertexFormats::sVertex_mesh* vertexData = nullptr;
-			
 			eae6320::Math::sVector position;
 			eae6320::Math::cMatrix_transformation transform;
 

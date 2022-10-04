@@ -15,6 +15,10 @@
 	#include "Resource Files/Resource.h"
 #endif
 
+#include <Engine/Graphics/Graphics.h>
+#include <Engine/Graphics/cEffect.h>
+#include <Engine/Graphics/cMesh.h>
+
 // Class Declaration
 //==================
 
@@ -26,6 +30,13 @@ namespace eae6320
 		//=========================
 
 	private:
+
+		float bg_Color[4] = { 0,1,1,1 };
+		Graphics::sMeshEffectPair meshEffectPairs1[2];
+		Graphics::sMeshEffectPair meshEffectPairs2[2];
+		size_t meshEffectPairCount = 2;
+		bool hideMeshFlag = false;
+		bool changeShaderFlag = false;
 
 		// Configuration
 		//--------------
@@ -69,7 +80,8 @@ namespace eae6320
 
 		// Run
 		//----
-
+		void SubmitDataToBeRendered(const float i_elapsedSecondCount_systemTime, const float i_elapsedSecondCount_sinceLastSimulationUpdate);
+		void UpdateSimulationBasedOnInput();
 		void UpdateBasedOnInput() final;
 
 		// Initialize / Clean Up

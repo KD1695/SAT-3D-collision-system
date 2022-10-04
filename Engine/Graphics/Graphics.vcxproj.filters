@@ -67,6 +67,7 @@
       <Filter>OpenGL</Filter>
     </ClCompile>
     <ClCompile Include="cEffect.cpp" />
+    <ClCompile Include="cMesh.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Direct3D\Includes.h">

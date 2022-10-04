@@ -27,6 +27,7 @@ namespace eae6320
 	namespace Graphics
 	{
 		struct sInitializationParameters;
+		struct sDataRequiredToRenderAFrame;
 	}
 	namespace UserOutput
 	{
@@ -181,7 +182,7 @@ namespace eae6320
 
 			// Your application should override the following function
 			// to instuct the Graphics system what to render for the next frame
-			virtual void SubmitDataToBeRendered( const float i_elapsedSecondCount_systemTime, const float i_elapsedSecondCount_sinceLastSimulationUpdate ) {}
+			virtual void SubmitDataToBeRendered( const float i_elapsedSecondCount_systemTime, const float i_elapsedSecondCount_sinceLastSimulationUpdate) {}
 
 			// Initialize / Clean Up
 			//----------------------

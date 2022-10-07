@@ -21,6 +21,8 @@ namespace eae6320
 		public:
 			cResult InitializeMeshEffect(size_t indexCount, uint16_t indexData[], size_t vertexCount, eae6320::Graphics::VertexFormats::sVertex_mesh vertexData[],
 				std::string fragmentShaderPath = "data/Shaders/Fragment/standard.shader", std::string vertexShaderPath = "data/Shaders/Vertex/standard.shader");
+			cResult InitializeMeshEffect(std::string meshPath, 
+				std::string fragmentShaderPath = "data/Shaders/Fragment/standard.shader", std::string vertexShaderPath = "data/Shaders/Vertex/standard.shader");
 			eae6320::Graphics::cMesh* GetMesh();
 			void SetMesh(Graphics::cMesh* mesh);
 			eae6320::Graphics::cEffect* GetEffect();

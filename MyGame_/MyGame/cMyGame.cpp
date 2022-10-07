@@ -110,79 +110,23 @@ eae6320::cResult eae6320::cMyGame::Initialize()
 	eae6320::Logging::OutputMessage("Initializing Game...");
 	auto result = eae6320::Results::Success;
 
-	eae6320::Graphics::VertexFormats::sVertex_mesh vertexData[4];
-	{
-		vertexData[0].x = 0.0f;
-		vertexData[0].y = 0.0f;
-		vertexData[0].z = 0.0f;
-
-		vertexData[1].x = 0.5f;
-		vertexData[1].y = 0.5f;
-		vertexData[1].z = 0.0f;
-
-		vertexData[2].x = 0.5f;
-		vertexData[2].y = 0.0f;
-		vertexData[2].z = 0.0f;
-
-		vertexData[3].x = 0.0f;
-		vertexData[3].y = 0.5f;
-		vertexData[3].z = 0.0f;
-	}
-	uint16_t indexData_1[6] = { 0,1,2,0,3,1 };
-
-	eae6320::Graphics::VertexFormats::sVertex_mesh vertexData2[3];
-	{
-		vertexData2[0].x = 0.0f;
-		vertexData2[0].y = 0.0f;
-		vertexData2[0].z = 0.0f;
-
-		vertexData2[1].x = 0.5f;
-		vertexData2[1].y = 0.5f;
-		vertexData2[1].z = 0.0f;
-
-		vertexData2[2].x = 0.5f;
-		vertexData2[2].y = 0.0f;
-		vertexData2[2].z = 0.0f;
-	}
-	uint16_t indexData_2[3] = { 0,1,2 };
-
-	eae6320::Graphics::VertexFormats::sVertex_mesh vertexData3[4];
-	{
-		vertexData3[0].x = 0.0f;
-		vertexData3[0].y = 0.0f;
-		vertexData3[0].z = 0.0f;
-
-		vertexData3[1].x = 0.5f;
-		vertexData3[1].y = 0.5f;
-		vertexData3[1].z = 0.0f;
-
-		vertexData3[2].x = 0.5f;
-		vertexData3[2].y = 0.0f;
-		vertexData3[2].z = 0.0f;
-
-		vertexData3[3].x = 0.0f;
-		vertexData3[3].y = 0.5f;
-		vertexData3[3].z = 0.0f;
-	}
-	uint16_t indexData_3[6] = { 0,1,2,0,3,1 };
-
 	//init gameObjects
 	{
-		if (!(result = gameObject1.InitializeMeshEffect(6, indexData_1, 4, vertexData, "data/Shaders/Fragment/animatedColor.shader")))
+		if (!(result = gameObject1.InitializeMeshEffect("data/Meshes/square.json", "data/Shaders/Fragment/animatedColor.shader")))
 		{
 			EAE6320_ASSERTF(false, "Failed Initializing GameObject");
 			return result;
 		}
 	}
 	{
-		if (!(result = Graphics::cMesh::Load(meshReplace, 3, indexData_2, 3, vertexData2)))
+		if (!(result = Graphics::cMesh::LoadFromFile(meshReplace, "data/Meshes/triangle.json")))
 		{
 			EAE6320_ASSERTF(false, "Failed Initializing mesh");
 			return result;
 		}
 	}
 	{
-		if (!(result = Graphics::cMesh::Load(meshMain, 6, indexData_3, 4, vertexData3)))
+		if (!(result = Graphics::cMesh::LoadFromFile(meshMain, "data/Meshes/square.json")))
 		{
 			EAE6320_ASSERTF(false, "Failed Initializing mesh");
 			return result;

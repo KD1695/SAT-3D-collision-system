@@ -16,5 +16,6 @@ return
 	meshes = 
 	{
 		"Meshes/square.json",
+		"Meshes/triangle.json",
 	},
 }

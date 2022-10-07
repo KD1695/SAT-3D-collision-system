@@ -42,6 +42,31 @@ eae6320::cResult eae6320::Components::GameObject::InitializeMeshEffect(size_t _i
 	return result;
 }
 
+eae6320::cResult eae6320::Components::GameObject::InitializeMeshEffect(std::string meshPath, std::string fragmentShaderPath, std::string vertexShaderPath)
+{
+	auto result = Results::Success;
+
+	//load effect
+	{
+		if (!(result = eae6320::Graphics::cEffect::Load(effect, fragmentShaderPath, vertexShaderPath)))
+		{
+			EAE6320_ASSERTF(false, "Can't initialize Graphics without the shading data");
+			return result;
+		}
+	}
+
+	//load mesh
+	{
+		if (!(result = eae6320::Graphics::cMesh::LoadFromFile(mesh, meshPath.c_str())))
+		{
+			EAE6320_ASSERTF(false, "Can't initialize Graphics without the geometry data");
+			return result;
+		}
+	}
+
+	return result;
+}
+
 void eae6320::Components::GameObject::CleanUp()
 {
 	if (effect != nullptr)

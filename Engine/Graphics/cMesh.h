@@ -3,6 +3,7 @@
 #include <Engine/Graphics/cVertexFormat.h>
 #include <Engine/Graphics/VertexFormats.h>
 #include <Engine/Assets/ReferenceCountedAssets.h>
+#include <External/JSON/Includes.h>
 
 #ifdef EAE6320_PLATFORM_D3D
 #include <Engine/Graphics/Direct3D/Includes.h>
@@ -13,6 +14,8 @@
 
 namespace eae6320
 {
+	using json = nlohmann::json;
+	
 	namespace Graphics
 	{
 		class cMesh
@@ -42,6 +45,7 @@ namespace eae6320
 		public:
 			void Draw();
 			static cResult Load(cMesh*& o_mesh, size_t indexCount, uint16_t indexData[], size_t vertexCount, eae6320::Graphics::VertexFormats::sVertex_mesh vertexData[]);
+			static cResult LoadFromFile(cMesh*& o_mesh, const char* filePath);
 			// Reference Counting
 			//-------------------
 			EAE6320_ASSETS_DECLAREDELETEDREFERENCECOUNTEDFUNCTIONS(cMesh)

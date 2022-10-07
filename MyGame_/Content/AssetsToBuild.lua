@@ -12,4 +12,9 @@ return
 		{ path = "Shaders/Fragment/newColor.shader", arguments = { "fragment" } },
 		{ path = "Shaders/Vertex/vertexInputLayout_mesh.shader", arguments = { "vertex" } },
 	},
+
+	meshes = 
+	{
+		"Meshes/square.json",
+	},
 }

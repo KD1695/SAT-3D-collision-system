@@ -17,5 +17,6 @@ return
 	{
 		"Meshes/square.json",
 		"Meshes/triangle.json",
+		"Meshes/pyramid.json",
 	},
 }

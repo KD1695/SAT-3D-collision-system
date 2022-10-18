@@ -112,7 +112,7 @@ eae6320::cResult eae6320::cMyGame::Initialize()
 
 	//init gameObjects
 	{
-		if (!(result = gameObject1.InitializeMeshEffect("data/Meshes/square.json", "data/Shaders/Fragment/animatedColor.shader")))
+		if (!(result = gameObject1.InitializeMeshEffect("data/Meshes/pyramid.json", "data/Shaders/Fragment/animatedColor.shader")))
 		{
 			EAE6320_ASSERTF(false, "Failed Initializing GameObject");
 			return result;
@@ -126,7 +126,7 @@ eae6320::cResult eae6320::cMyGame::Initialize()
 		}
 	}
 	{
-		if (!(result = Graphics::cMesh::LoadFromFile(meshMain, "data/Meshes/square.json")))
+		if (!(result = Graphics::cMesh::LoadFromFile(meshMain, "data/Meshes/pyramid.json")))
 		{
 			EAE6320_ASSERTF(false, "Failed Initializing mesh");
 			return result;

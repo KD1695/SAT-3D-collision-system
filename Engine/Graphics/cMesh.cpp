@@ -66,8 +66,8 @@ eae6320::cResult eae6320::Graphics::cMesh::LoadFromFile(cMesh*& o_mesh, const ch
 	//mesh data
 	size_t vertexCount=0;
 	size_t indexCount=0;
-	uint16_t indexData[300];
-	VertexFormats::sVertex_mesh vertexData[300];
+	uint16_t indexData[UINT16_MAX];
+	VertexFormats::sVertex_mesh vertexData[UINT16_MAX];
 
 	//get mesh data from json object
 	auto itr = j.find("vertexData");

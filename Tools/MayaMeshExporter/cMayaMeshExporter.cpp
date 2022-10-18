@@ -792,10 +792,29 @@ namespace
 
 			// Open table
 			// (If you want to use JSON instead of Lua you will have to change this slightly)
-			fout << "return" "\n"
-				"{" "\n";
+			fout << "{" "\n";
 			{
-				//EAE6320_TODO
+				fout << "\"vertexData\":[ \n";
+				//all vertices
+				for (size_t i = 0; i < i_vertexArray.size(); i++)
+				{
+					fout << "[" + std::to_string(i_vertexArray[i].vertex.x) + ",\n";
+					fout << std::to_string(i_vertexArray[i].vertex.y) + ",\n";
+					if (i == i_vertexArray.size() - 1)
+						fout << std::to_string(i_vertexArray[i].vertex.z) + "\n]\n";
+					else
+						fout << std::to_string(i_vertexArray[i].vertex.z) + "\n],\n";
+				}
+
+				fout << "],\n \"indexData\": [ \n";
+				//index data array
+				for (size_t i = 0; i < i_indexArray.size(); i++)
+				{
+					if (i == i_indexArray.size() - 1)
+						fout << std::to_string(i_indexArray[i]) + "\n]\n";
+					else
+						fout << std::to_string(i_indexArray[i]) + ",\n";
+				}
 			}
 			// Close table
 			fout << "}" "\n";

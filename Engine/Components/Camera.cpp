@@ -3,7 +3,7 @@
 eae6320::Components::Camera::Camera()
 {
 	SetPosition(Math::sVector( 0, 0, 10));
-	cameraToProjectedTransform = Math::cMatrix_transformation::CreateCameraToProjectedTransform_perspective(0.8f, 1, 0.1f, 20.0f);
+	cameraToProjectedTransform = Math::cMatrix_transformation::CreateCameraToProjectedTransform_perspective(0.8f, 1, 0.1f, 200.0f);
 }
 
 void eae6320::Components::Camera::Update(float i_secondCountToIntegrate)

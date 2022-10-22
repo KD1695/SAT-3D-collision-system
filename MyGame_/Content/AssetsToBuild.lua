@@ -18,5 +18,8 @@ return
 		"Meshes/square.json",
 		"Meshes/triangle.json",
 		"Meshes/pyramid.json",
+		"Meshes/helix.json",
+		"Meshes/torus.json",
+		"Meshes/plane.json",
 	},
 }

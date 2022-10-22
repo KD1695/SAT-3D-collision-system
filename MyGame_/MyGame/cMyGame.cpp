@@ -17,7 +17,7 @@
 void eae6320::cMyGame::SubmitDataToBeRendered(const float i_elapsedSecondCount_systemTime, const float i_elapsedSecondCount_sinceLastSimulationUpdate)
 {
 	eae6320::Graphics::SetBgColor(bg_Color);
-	eae6320::Graphics::SetMeshEffectData(camera, &gameObject1, objectCount);
+	eae6320::Graphics::SetMeshEffectData(camera, gameObjects, objectCount);
 }
 
 void eae6320::cMyGame::UpdateSimulationBasedOnInput()
@@ -26,25 +26,25 @@ void eae6320::cMyGame::UpdateSimulationBasedOnInput()
 	if (UserInput::IsKeyPressed('A'))
 	{
 		//move left
-		gameObject1.SetVelocity(Math::sVector(-10, 0, 0));
+		gameObjects[0].SetVelocity(Math::sVector(-10, 0, 0));
 	}
 	else if (UserInput::IsKeyPressed('D'))
 	{
 		//move right
-		gameObject1.SetVelocity(Math::sVector(10, 0, 0));
+		gameObjects[0].SetVelocity(Math::sVector(10, 0, 0));
 	}
 	else if (UserInput::IsKeyPressed('W'))
 	{
 		//move up
-		gameObject1.SetVelocity(Math::sVector(0, 10, 0));
+		gameObjects[0].SetVelocity(Math::sVector(0, 10, 0));
 	}
 	else if (UserInput::IsKeyPressed('S'))
 	{
 		//move down
-		gameObject1.SetVelocity(Math::sVector(0, -10, 0));
+		gameObjects[0].SetVelocity(Math::sVector(0, -10, 0));
 	}
 	else
-		gameObject1.SetVelocity(Math::sVector(0, 0, 0));
+		gameObjects[0].SetVelocity(Math::sVector(0, 0, 0));
 
 	//camera movement
 	if (UserInput::IsKeyPressed('J'))
@@ -80,20 +80,6 @@ void eae6320::cMyGame::UpdateBasedOnInput()
 		const auto result = Exit( EXIT_SUCCESS );
 		EAE6320_ASSERT( result );
 	}
-	if (UserInput::IsKeyPressed(UserInput::KeyCodes::Space))
-	{
-		//change mesh
-		if (!changeMeshFlag)
-		{
-			gameObject1.SetMesh(meshReplace);
-			changeMeshFlag = true;
-		}
-		else
-		{
-			gameObject1.SetMesh(meshMain);
-			changeMeshFlag = false;
-		}
-	}
 }
 
 // Initialize / Clean Up
@@ -101,7 +87,7 @@ void eae6320::cMyGame::UpdateBasedOnInput()
 
 void eae6320::cMyGame::UpdateBasedOnTime(const float i_elapsedSecondCount_sinceLastUpdate)
 {
-	gameObject1.Update(i_elapsedSecondCount_sinceLastUpdate);
+	gameObjects[0].Update(i_elapsedSecondCount_sinceLastUpdate);
 	camera.Update(i_elapsedSecondCount_sinceLastUpdate);
 }
 
@@ -112,23 +98,30 @@ eae6320::cResult eae6320::cMyGame::Initialize()
 
 	//init gameObjects
 	{
-		if (!(result = gameObject1.InitializeMeshEffect("data/Meshes/pyramid.json", "data/Shaders/Fragment/animatedColor.shader")))
+		if (!(result = gameObjects[0].InitializeMeshEffect("data/Meshes/pyramid.json", "data/Shaders/Fragment/animatedColor.shader")))
 		{
 			EAE6320_ASSERTF(false, "Failed Initializing GameObject");
 			return result;
 		}
 	}
 	{
-		if (!(result = Graphics::cMesh::LoadFromFile(meshReplace, "data/Meshes/triangle.json")))
+		if (!(result = gameObjects[1].InitializeMeshEffect("data/Meshes/torus.json", "data/Shaders/Fragment/standard.shader")))
 		{
-			EAE6320_ASSERTF(false, "Failed Initializing mesh");
+			EAE6320_ASSERTF(false, "Failed Initializing GameObject");
 			return result;
 		}
 	}
 	{
-		if (!(result = Graphics::cMesh::LoadFromFile(meshMain, "data/Meshes/pyramid.json")))
+		if (!(result = gameObjects[2].InitializeMeshEffect("data/Meshes/helix.json", "data/Shaders/Fragment/newColor.shader")))
 		{
-			EAE6320_ASSERTF(false, "Failed Initializing mesh");
+			EAE6320_ASSERTF(false, "Failed Initializing GameObject");
+			return result;
+		}
+	}
+	{
+		if (!(result = gameObjects[3].InitializeMeshEffect("data/Meshes/plane.json", "data/Shaders/Fragment/animatedColor.shader")))
+		{
+			EAE6320_ASSERTF(false, "Failed Initializing GameObject");
 			return result;
 		}
 	}
@@ -140,8 +133,10 @@ eae6320::cResult eae6320::cMyGame::CleanUp()
 {
 	eae6320::Logging::OutputMessage("Cleaning up Game...");
 
-	gameObject1.CleanUp();
-	gameObject2.CleanUp();
+	for (int i = 0; i < 4; i++)
+	{
+		gameObjects[i].CleanUp();
+	}
 
 	return Results::Success;
 }

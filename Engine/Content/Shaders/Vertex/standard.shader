@@ -65,6 +65,7 @@ void main(
 
 // These values come from one of the VertexFormats::sVertex_mesh that the vertex buffer was filled with in C code
 layout( location = 0 ) in vector3 i_vertexPosition_local;
+layout( location = 1 ) in vector4 i_vertexColor;
 
 // Output
 //=======
@@ -72,6 +73,7 @@ layout( location = 0 ) in vector3 i_vertexPosition_local;
 // The vertex shader must always output a position value,
 // but unlike HLSL where the value is explicit
 // GLSL has an automatically-required variable named "gl_Position"
+layout( location = 1 ) out vector4 o_vertexColor;
 
 // Entry Point
 //============
@@ -90,6 +92,10 @@ void main()
 		vector4 vertexPosition_camera = g_transform_worldToCamera * vertexPosition_world;
 		// Project the vertex from camera space into projected space
 		gl_Position = g_transform_cameraToProjected * vertexPosition_camera;
+	}
+	//set color
+	{
+		o_vertexColor = i_vertexColor;
 	}
 }
 

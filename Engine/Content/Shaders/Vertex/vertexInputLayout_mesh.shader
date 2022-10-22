@@ -46,6 +46,7 @@ void main(
 
 // These values come from one of the VertexFormats::sVertex_mesh that the vertex buffer was filled with in C code
 layout( location = 0 ) in vector3 i_position;
+layout( location = 1 ) in vector4 i_color;
 
 // Output
 //=======
@@ -53,6 +54,7 @@ layout( location = 0 ) in vector3 i_position;
 // The vertex shader must always output a position value,
 // but unlike HLSL where the value is explicit
 // GLSL has an automatically-required variable named "gl_Position"
+layout( location = 1 ) out vector4 o_color;
 
 // Entry Point
 //============
@@ -61,5 +63,6 @@ void main()
 {
 	// The shader program is only used by Direct3D
 	gl_Position = vector4( i_position, 1.0 );
+	o_color = i_color;
 }
 #endif

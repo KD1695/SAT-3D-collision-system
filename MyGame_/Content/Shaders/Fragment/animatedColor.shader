@@ -16,6 +16,7 @@ void main(
 	//======
 
 	in const vector4 i_fragmentPosition : SV_POSITION,
+	in const vector4 i_fragmentColor : COLOR,
 
 	// Output
 	//=======
@@ -27,6 +28,10 @@ void main(
 )
 
 #elif defined( EAE6320_PLATFORM_GL )
+
+// Input
+//======
+layout( location = 1 ) in vector4 i_fragmentColor;
 
 // Output
 //=======
@@ -46,7 +51,7 @@ void main()
 	float timeSine = sin(g_elapsedSecondCount_simulationTime);
 	float variableValue =  timeSine < 0 ? timeSine+1 : timeSine;
 	// Output random fading red
-	o_color = vector4(
+	o_color = i_fragmentColor * vector4(
 		// RGB (color)
 		variableValue, 0.0, 0.0,
 		// Alpha (opacity)

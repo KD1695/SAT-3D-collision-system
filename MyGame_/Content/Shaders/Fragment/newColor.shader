@@ -16,6 +16,7 @@ void main(
 	//======
 
 	in const vector4 i_fragmentPosition : SV_POSITION,
+	in const vector4 i_fragmentColor : COLOR,
 
 	// Output
 	//=======
@@ -27,6 +28,10 @@ void main(
 )
 
 #elif defined( EAE6320_PLATFORM_GL )
+
+// Input
+//======
+layout( location = 1 ) in vector4 i_fragmentColor;
 
 // Output
 //=======
@@ -43,7 +48,7 @@ void main()
 #endif
 //shader code body
 {
-	o_color = vector4(
+	o_color = i_fragmentColor * vector4(
 		// RGB (color)
 		1.0, 1.0, 0.0,
 		// Alpha (opacity)

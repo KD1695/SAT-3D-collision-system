@@ -105,7 +105,7 @@ eae6320::cResult eae6320::cMyGame::Initialize()
 		}
 	}
 	{
-		if (!(result = gameObjects[1].InitializeMeshEffect("data/Meshes/torus.json", "data/Shaders/Fragment/standard.shader")))
+		if (!(result = gameObjects[1].InitializeMeshEffect("data/Meshes/torus.json", "data/Shaders/Fragment/animatedColor.shader")))
 		{
 			EAE6320_ASSERTF(false, "Failed Initializing GameObject");
 			return result;
@@ -119,7 +119,7 @@ eae6320::cResult eae6320::cMyGame::Initialize()
 		}
 	}
 	{
-		if (!(result = gameObjects[3].InitializeMeshEffect("data/Meshes/plane.json", "data/Shaders/Fragment/standard.shader")))
+		if (!(result = gameObjects[3].InitializeMeshEffect("data/Meshes/plane.json", "data/Shaders/Fragment/newColor.shader")))
 		{
 			EAE6320_ASSERTF(false, "Failed Initializing GameObject");
 			return result;

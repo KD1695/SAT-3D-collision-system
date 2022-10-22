@@ -17,6 +17,7 @@ void main(
 	//======
 
 	in const vector4 i_fragmentPosition : SV_POSITION,
+	in const vector4 i_fragmentColor : COLOR,
 
 	// Output
 	//=======
@@ -44,9 +45,5 @@ void main()
 //shader code body
 {
 	// Output solid white
-	o_color = vector4(
-		// RGB (color)
-		1.0, 1.0, 1.0,
-		// Alpha (opacity)
-		1.0 );
+	o_color = i_fragmentColor;
 }

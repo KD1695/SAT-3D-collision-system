@@ -51,7 +51,7 @@ eae6320::cResult eae6320::Graphics::cVertexFormat::Initialize( const eVertexType
 		{
 		case eVertexType::Mesh:
 			{
-				constexpr unsigned int vertexElementCount = 1;
+				constexpr unsigned int vertexElementCount = 2;
 				D3D11_INPUT_ELEMENT_DESC layoutDescription[vertexElementCount] = {};
 				{
 					// Slot 0
@@ -69,6 +69,21 @@ eae6320::cResult eae6320::Graphics::cVertexFormat::Initialize( const eVertexType
 						positionElement.AlignedByteOffset = offsetof( VertexFormats::sVertex_mesh, x );
 						positionElement.InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
 						positionElement.InstanceDataStepRate = 0;	// (Must be zero for per-vertex data)
+					}
+
+					// COLOR
+					// 4 ints == 2 bytes
+					// Offset = 0
+					{
+						auto& colorElement = layoutDescription[1];
+
+						colorElement.SemanticName = "COLOR";
+						colorElement.SemanticIndex = 0;	// (Semantics without modifying indices at the end can always use zero)
+						colorElement.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+						colorElement.InputSlot = 0;
+						colorElement.AlignedByteOffset = offsetof(VertexFormats::sVertex_mesh, r);
+						colorElement.InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
+						colorElement.InstanceDataStepRate = 0;	// (Must be zero for per-vertex data)
 					}
 				}
 

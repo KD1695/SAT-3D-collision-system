@@ -98,7 +98,7 @@ eae6320::cResult eae6320::cMyGame::Initialize()
 
 	//init gameObjects
 	{
-		if (!(result = gameObjects[0].InitializeMeshEffect("data/Meshes/pyramid.json", "data/Shaders/Fragment/animatedColor.shader")))
+		if (!(result = gameObjects[0].InitializeMeshEffect("data/Meshes/pyramid.json", "data/Shaders/Fragment/standard.shader")))
 		{
 			EAE6320_ASSERTF(false, "Failed Initializing GameObject");
 			return result;
@@ -112,14 +112,14 @@ eae6320::cResult eae6320::cMyGame::Initialize()
 		}
 	}
 	{
-		if (!(result = gameObjects[2].InitializeMeshEffect("data/Meshes/helix.json", "data/Shaders/Fragment/newColor.shader")))
+		if (!(result = gameObjects[2].InitializeMeshEffect("data/Meshes/helix.json", "data/Shaders/Fragment/standard.shader")))
 		{
 			EAE6320_ASSERTF(false, "Failed Initializing GameObject");
 			return result;
 		}
 	}
 	{
-		if (!(result = gameObjects[3].InitializeMeshEffect("data/Meshes/plane.json", "data/Shaders/Fragment/animatedColor.shader")))
+		if (!(result = gameObjects[3].InitializeMeshEffect("data/Meshes/plane.json", "data/Shaders/Fragment/standard.shader")))
 		{
 			EAE6320_ASSERTF(false, "Failed Initializing GameObject");
 			return result;

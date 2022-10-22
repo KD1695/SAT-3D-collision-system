@@ -794,7 +794,7 @@ namespace
 			// (If you want to use JSON instead of Lua you will have to change this slightly)
 			fout << "{" "\n";
 			{
-				fout << "\"vertexData\":[ \n";
+				fout << "\"vertexPositionData\":[ \n";
 				//all vertices
 				for (size_t i = 0; i < i_vertexArray.size(); i++)
 				{
@@ -805,8 +805,23 @@ namespace
 					else
 						fout << std::to_string(i_vertexArray[i].vertex.z) + "\n],\n";
 				}
+				fout << "],\n";
 
-				fout << "],\n \"indexData\": [ \n";
+				fout << "\"vertexColorData\":[ \n";
+				//all vertices
+				for (size_t i = 0; i < i_vertexArray.size(); i++)
+				{
+					fout << "[" + std::to_string(i_vertexArray[i].vertex.r) + ",\n";
+					fout << std::to_string(i_vertexArray[i].vertex.g) + ",\n";
+					fout << std::to_string(i_vertexArray[i].vertex.b) + ",\n";
+					if (i == i_vertexArray.size() - 1)
+						fout << std::to_string(i_vertexArray[i].vertex.a) + "\n]\n";
+					else
+						fout << std::to_string(i_vertexArray[i].vertex.a) + "\n],\n";
+				}
+				fout << "],\n";
+				
+				fout << "\"indexData\": [ \n";
 				//index data array
 				for (size_t i = 0; i < i_indexArray.size(); i++)
 				{

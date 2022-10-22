@@ -66,20 +66,40 @@ eae6320::cResult eae6320::Graphics::cMesh::LoadFromFile(cMesh*& o_mesh, const ch
 	//mesh data
 	size_t vertexCount=0;
 	size_t indexCount=0;
-	uint16_t indexData[UINT16_MAX];
-	VertexFormats::sVertex_mesh vertexData[UINT16_MAX];
+	uint16_t *indexData = nullptr;
+	VertexFormats::sVertex_mesh *vertexData = nullptr;
 
 	//get mesh data from json object
-	auto itr = j.find("vertexData");
+	auto itr = j.find("vertexPositionData");
+	auto itr2 = j.find("vertexColorData");
+	bool hasColor = itr2 != j.end();
 	if (itr != j.end())
 	{
-		auto _vertexData = j["vertexData"].get<std::vector<std::vector<float>>>();
+		auto _vertexData = j["vertexPositionData"].get<std::vector<std::vector<float>>>();
+		std::vector<std::vector<float>> _colorData;
+		if(hasColor)
+			_colorData = j["vertexColorData"].get<std::vector<std::vector<float>>>();
 		vertexCount = _vertexData.size();
+		vertexData = reinterpret_cast<VertexFormats::sVertex_mesh*>(calloc(vertexCount, sizeof(VertexFormats::sVertex_mesh)));
 		for (size_t i = 0; i < vertexCount; i++)
 		{
 			vertexData[i].x = _vertexData[i][0];
 			vertexData[i].y = _vertexData[i][1];
 			vertexData[i].z = _vertexData[i][2];
+			if (hasColor)
+			{
+				vertexData[i].r = (uint8_t)(255 * _colorData[i][0]);
+				vertexData[i].g = (uint8_t)(255 * _colorData[i][1]);
+				vertexData[i].b = (uint8_t)(255 * _colorData[i][2]);
+				vertexData[i].a = (uint8_t)(255 * _colorData[i][3]);
+			}
+			else
+			{
+				vertexData[i].r = 255;
+				vertexData[i].g = 255;
+				vertexData[i].b = 255;
+				vertexData[i].a = 255;
+			}
 		}
 	}
 
@@ -88,6 +108,7 @@ eae6320::cResult eae6320::Graphics::cMesh::LoadFromFile(cMesh*& o_mesh, const ch
 	{
 		auto _indexData = j["indexData"].get<std::vector<uint16_t>>();
 		indexCount = _indexData.size();
+		indexData = reinterpret_cast<uint16_t*>(calloc(indexCount, sizeof(uint16_t)));
 		for (size_t i = 0; i < indexCount; i++)
 		{
 			indexData[i] = _indexData[i];

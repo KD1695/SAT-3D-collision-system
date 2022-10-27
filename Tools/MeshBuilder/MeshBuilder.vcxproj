@@ -38,6 +38,9 @@
     <ProjectReference Include="..\..\Engine\Windows\Windows.vcxproj">
       <Project>{6ff846d1-2377-4601-b2f6-83e31748cb16}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\..\External\JSON\JSON.vcxproj">
+      <Project>{a5b86626-9cbf-461e-8440-4d2e12af20e0}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\..\External\Mcpp\Mcpp.vcxproj">
       <Project>{dd1b3bf3-3c86-49f6-abf4-e021ebcdaf80}</Project>
     </ProjectReference>

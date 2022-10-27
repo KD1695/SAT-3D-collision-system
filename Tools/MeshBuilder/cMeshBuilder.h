@@ -12,12 +12,15 @@
 #include <Engine/Graphics/Configuration.h>
 #include <Engine/Results/cResult.h>
 #include <Engine/Platform/Platform.h>
+#include <External/JSON/Includes.h>
 
 // Class Declaration
 //==================
 
 namespace eae6320
 {
+	using json = nlohmann::json;
+
 	namespace Assets
 	{
 		class cMeshBuilder final : public iBuilder

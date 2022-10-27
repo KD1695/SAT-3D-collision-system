@@ -1,4 +1,5 @@
 #include "cMeshBuilder.h"
+#include <fstream>
 #include <Tools/AssetBuildLibrary/Functions.h>
 
 eae6320::cResult eae6320::Assets::cMeshBuilder::Build(const std::vector<std::string>& i_arguments)
@@ -14,13 +15,30 @@ eae6320::cResult eae6320::Assets::cMeshBuilder::Build(const std::vector<std::str
 			return result;
 		}
 	}
-	// Write the mesh file to disk
+
+	json j = json::parse((char*)dataFromFile.data, ((char*)dataFromFile.data) + dataFromFile.size);
+	void* dataToWrite = nullptr;
+	size_t writeSize = 0;
+	FILE* fileToWrite = fopen(m_path_target, "w");
+
+	auto itr = j.find("vertexPositionData");
+	if (itr != j.end())
 	{
-		std::string errorMessage;
-		if (!(result = eae6320::Platform::WriteBinaryFile(m_path_target, dataFromFile.data, dataFromFile.size, &errorMessage)))
-		{
-			eae6320::Assets::OutputErrorMessageWithFileInfo(m_path_source, errorMessage.c_str());
-		}
+		auto _vertexData = j["vertexPositionData"].get<std::vector<std::vector<float>>>();
+		size_t len = _vertexData.size();
+		fwrite((void*)&len, sizeof(size_t), 1, fileToWrite);
+		fwrite((void*)_vertexData.data(), sizeof(_vertexData[0]), _vertexData.size(), fileToWrite);
 	}
+	auto itr2 = j.find("indexData");
+	if (itr2 != j.end())
+	{
+		auto _indexData = j["indexData"].get<std::vector<float>>();
+		size_t len = _indexData.size();
+		fwrite((void*)&len, sizeof(size_t), 1, fileToWrite);
+		fwrite((void*)_indexData.data(), sizeof(_indexData[0]), _indexData.size(), fileToWrite);
+	}
+
+	fclose(fileToWrite);
+
 	return result;
 }

@@ -98,7 +98,7 @@ eae6320::cResult eae6320::cMyGame::Initialize()
 
 	//init gameObjects
 	{
-		if (!(result = gameObjects[0].InitializeMeshEffect("data/Meshes/pyramid.json", "data/Shaders/Fragment/standard.shader")))
+		if (!(result = gameObjects[0].InitializeMeshEffect("data/Meshes/pyramid_color.json", "data/Shaders/Fragment/standard.shader")))
 		{
 			EAE6320_ASSERTF(false, "Failed Initializing GameObject");
 			return result;

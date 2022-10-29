@@ -3,6 +3,7 @@
 #include <Engine/ScopeGuard/cScopeGuard.h>
 #include <new>
 #include <fstream>
+#include <Engine/Platform/Platform.h>
 
 eae6320::Graphics::cMesh::~cMesh()
 {
@@ -59,59 +60,76 @@ eae6320::cResult eae6320::Graphics::cMesh::LoadFromFile(cMesh*& o_mesh, const ch
 {
 	//Read json from path
 	EAE6320_ASSERT(filePath != nullptr);
-	std::ifstream ifs(filePath);
-	json j;
-	ifs >> j;
-
+	
 	//mesh data
 	size_t vertexCount=0;
 	size_t indexCount=0;
 	uint16_t *indexData = nullptr;
 	VertexFormats::sVertex_mesh *vertexData = nullptr;
 
-	//get mesh data from json object
-	auto itr = j.find("vertexPositionData");
-	auto itr2 = j.find("vertexColorData");
-	bool hasColor = itr2 != j.end();
-	if (itr != j.end())
+	void* meshData = nullptr;
+	char* meshDataIterator = nullptr;
+	eae6320::Platform::sDataFromFile fileData;
+	eae6320::Platform::LoadBinaryFile(filePath, fileData);
+	meshDataIterator = (char*)fileData.data;
+	
+	meshData = malloc(sizeof(uint16_t));
+	memcpy(meshData, meshDataIterator, sizeof(uint16_t));
+	vertexCount = *reinterpret_cast<uint16_t*>(meshData);
+	meshDataIterator += sizeof(uint16_t);
+
+	meshData = malloc(sizeof(float) * 3 * (size_t)vertexCount);
+	memcpy(meshData, meshDataIterator, sizeof(float) * 3 * (size_t)vertexCount);
+	float* _vertexData = reinterpret_cast<float*>(meshData);
+	meshDataIterator += 4 * 3 * (size_t)vertexCount;
+
+	meshData = malloc(sizeof(uint16_t));
+	memcpy(meshData, meshDataIterator, sizeof(uint16_t));
+	size_t newCount = *reinterpret_cast<uint16_t*>(meshData);
+	bool hasColor = vertexCount == newCount;
+	meshDataIterator += sizeof(uint16_t);
+
+	float* _colorData = nullptr;
+	if (hasColor)
 	{
-		auto _vertexData = j["vertexPositionData"].get<std::vector<std::vector<float>>>();
-		std::vector<std::vector<float>> _colorData;
-		if(hasColor)
-			_colorData = j["vertexColorData"].get<std::vector<std::vector<float>>>();
-		vertexCount = _vertexData.size();
-		vertexData = reinterpret_cast<VertexFormats::sVertex_mesh*>(calloc(vertexCount, sizeof(VertexFormats::sVertex_mesh)));
-		for (size_t i = 0; i < vertexCount; i++)
-		{
-			vertexData[i].x = _vertexData[i][0];
-			vertexData[i].y = _vertexData[i][1];
-			vertexData[i].z = _vertexData[i][2];
-			if (hasColor)
-			{
-				vertexData[i].r = (uint8_t)(255 * _colorData[i][0]);
-				vertexData[i].g = (uint8_t)(255 * _colorData[i][1]);
-				vertexData[i].b = (uint8_t)(255 * _colorData[i][2]);
-				vertexData[i].a = (uint8_t)(255 * _colorData[i][3]);
-			}
-			else
-			{
-				vertexData[i].r = 255;
-				vertexData[i].g = 255;
-				vertexData[i].b = 255;
-				vertexData[i].a = 255;
-			}
-		}
+		meshData = malloc(sizeof(float) * 4 * (size_t)vertexCount);
+		memcpy(meshData, meshDataIterator, sizeof(float) * 4 * (size_t)vertexCount);
+		_colorData = reinterpret_cast<float*>(meshData);
+		meshDataIterator += sizeof(float) * 4 * (size_t)vertexCount;
+		
+		meshData = malloc(sizeof(uint16_t));
+		memcpy(meshData, meshDataIterator, sizeof(uint16_t));
+		indexCount = (size_t)*reinterpret_cast<uint16_t*>(meshData);
+		meshDataIterator += sizeof(uint16_t);
+	}
+	else
+	{
+		indexCount = newCount;
 	}
 
-	itr = j.find("indexData");
-	if (itr != j.end())
+	meshData = malloc(sizeof(uint16_t) * (size_t)indexCount);
+	memcpy(meshData, meshDataIterator, sizeof(uint16_t) * (size_t)indexCount);
+	indexData = reinterpret_cast<uint16_t*>(meshData);
+	
+	vertexData = reinterpret_cast<VertexFormats::sVertex_mesh*>(calloc((size_t)vertexCount, sizeof(VertexFormats::sVertex_mesh)));
+	for (size_t i = 0; i < (size_t)vertexCount; i++)
 	{
-		auto _indexData = j["indexData"].get<std::vector<uint16_t>>();
-		indexCount = _indexData.size();
-		indexData = reinterpret_cast<uint16_t*>(calloc(indexCount, sizeof(uint16_t)));
-		for (size_t i = 0; i < indexCount; i++)
+		vertexData[i].x = _vertexData[i * 3 + 0];
+		vertexData[i].y = _vertexData[i * 3 + 1];
+		vertexData[i].z = _vertexData[i * 3 + 2];
+		if (hasColor)
 		{
-			indexData[i] = _indexData[i];
+			vertexData[i].r = (uint8_t)(255 * _colorData[i * 4 + 0]);
+			vertexData[i].g = (uint8_t)(255 * _colorData[i * 4 + 1]);
+			vertexData[i].b = (uint8_t)(255 * _colorData[i * 4 + 2]);
+			vertexData[i].a = (uint8_t)(255 * _colorData[i * 4 + 3]);
+		}
+		else
+		{
+			vertexData[i].r = 255;
+			vertexData[i].g = 255;
+			vertexData[i].b = 255;
+			vertexData[i].a = 255;
 		}
 	}
 

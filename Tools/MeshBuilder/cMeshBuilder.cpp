@@ -27,7 +27,7 @@ eae6320::cResult eae6320::Assets::cMeshBuilder::Build(const std::vector<std::str
 		auto _vertexData = j["vertexPositionData"].get<std::vector<std::vector<float>>>();
 		uint16_t len = (uint16_t)_vertexData.size();
 		meshFile.write((char*)&len, sizeof(uint16_t));
-		float* vertexDataArray = (float*)malloc(len * 4 * 3);
+		float* vertexDataArray = (float*)malloc(len * sizeof(float) * 3);
 		float* floatIterator = vertexDataArray;
 		for (size_t i = 0; i < _vertexData.size(); i++)
 		{

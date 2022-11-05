@@ -3,9 +3,11 @@
   <ItemGroup>
     <ClInclude Include="Collider.h" />
     <ClInclude Include="Matrix.h" />
+    <ClInclude Include="Collision.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Matrix.cpp" />
     <ClCompile Include="Collider.cpp" />
+    <ClCompile Include="Collision.cpp" />
   </ItemGroup>
 </Project>

@@ -20,6 +20,7 @@ namespace eae6320
 			cCollider(eae6320::Math::sVector size = eae6320::Math::sVector(1, 1, 1));
 			cCollider(eae6320::Math::sVector size, eae6320::Physics::sRigidBodyState* rigidBodyState);
 			void SetSize(float x, float y, float z);
+			~cCollider();
 		};
 	}
 }

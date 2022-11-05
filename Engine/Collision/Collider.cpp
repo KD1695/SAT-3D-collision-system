@@ -1,4 +1,5 @@
 #include <Engine/Collision/Collider.h>
+#include <Engine/Collision/Collision.h>
 #include <corecrt_math.h>
 
 /// <summary>
@@ -10,6 +11,7 @@ eae6320::Collision::cCollider::cCollider(eae6320::Math::sVector _size)
 	size = _size;
 	*rigidBodyState = eae6320::Physics::sRigidBodyState();
 	CalculateVertices();
+	AddCollider(this);
 }
 
 /// <summary>
@@ -22,6 +24,7 @@ eae6320::Collision::cCollider::cCollider(eae6320::Math::sVector _size, eae6320::
 	size = _size;
 	rigidBodyState = _rigidBodyState;
 	CalculateVertices();
+	AddCollider(this);
 }
 
 /// <summary>
@@ -37,6 +40,11 @@ void eae6320::Collision::cCollider::SetSize(float x, float y, float z)
 	size.z = z;
 
 	CalculateVertices();
+}
+
+eae6320::Collision::cCollider::~cCollider()
+{
+	RemoveCollider(this);
 }
 
 /// <summary>

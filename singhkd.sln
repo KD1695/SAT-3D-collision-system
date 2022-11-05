@@ -115,6 +115,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "JSON", "External\JSON\JSON.
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MayaMeshExporter", "Tools\MayaMeshExporter\MayaMeshExporter.vcxproj", "{7E1B3DFF-88C1-43F2-AE97-BE197D80EF2B}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Collision", "Engine\Collision\Collision.vcxproj", "{BF390F11-D60C-4EAA-9031-0E598735008E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -378,6 +380,14 @@ Global
 		{7E1B3DFF-88C1-43F2-AE97-BE197D80EF2B}.Release|x64.Build.0 = Release|x64
 		{7E1B3DFF-88C1-43F2-AE97-BE197D80EF2B}.Release|x86.ActiveCfg = Release|x64
 		{7E1B3DFF-88C1-43F2-AE97-BE197D80EF2B}.Release|x86.Build.0 = Release|x64
+		{BF390F11-D60C-4EAA-9031-0E598735008E}.Debug|x64.ActiveCfg = Debug|x64
+		{BF390F11-D60C-4EAA-9031-0E598735008E}.Debug|x64.Build.0 = Debug|x64
+		{BF390F11-D60C-4EAA-9031-0E598735008E}.Debug|x86.ActiveCfg = Debug|Win32
+		{BF390F11-D60C-4EAA-9031-0E598735008E}.Debug|x86.Build.0 = Debug|Win32
+		{BF390F11-D60C-4EAA-9031-0E598735008E}.Release|x64.ActiveCfg = Release|x64
+		{BF390F11-D60C-4EAA-9031-0E598735008E}.Release|x64.Build.0 = Release|x64
+		{BF390F11-D60C-4EAA-9031-0E598735008E}.Release|x86.ActiveCfg = Release|Win32
+		{BF390F11-D60C-4EAA-9031-0E598735008E}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -416,6 +426,7 @@ Global
 		{43BF0634-AEBD-4C60-AAC5-1B6C4D1C0A19} = {31B05C03-4BB2-4A0D-B621-B41DA6B0F57E}
 		{A5B86626-9CBF-461E-8440-4D2E12AF20E0} = {EE37D457-6F3F-4596-B682-FC8CB683E326}
 		{7E1B3DFF-88C1-43F2-AE97-BE197D80EF2B} = {31B05C03-4BB2-4A0D-B621-B41DA6B0F57E}
+		{BF390F11-D60C-4EAA-9031-0E598735008E} = {E5C51EF7-81D3-4030-A4CE-0D2D666CEF4F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A89F366F-0B7F-464F-90A8-A4828B273298}

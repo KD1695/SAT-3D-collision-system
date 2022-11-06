@@ -11,6 +11,11 @@ void eae6320::Components::GameObject::SetVelocity(Math::sVector velocity)
 	rigidBodyState.velocity = velocity;
 }
 
+eae6320::Physics::sRigidBodyState* eae6320::Components::GameObject::GetRigidBodyReference()
+{
+	return &rigidBodyState;
+}
+
 eae6320::Math::cMatrix_transformation eae6320::Components::GameObject::GetTransform()
 {
 	return transform;

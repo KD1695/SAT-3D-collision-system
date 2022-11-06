@@ -29,6 +29,7 @@ namespace eae6320
 			void Update(float i_secondCountToIntegrate);
 			void SetVelocity(Math::sVector velocity);
 			Math::cMatrix_transformation GetTransform();
+			Physics::sRigidBodyState* GetRigidBodyReference();
 			void CleanUp();
 			~GameObject();
 		};

@@ -11,6 +11,7 @@
 #include <Engine/ScopeGuard/cScopeGuard.h>
 #include <Engine/Time/Time.h>
 #include <Engine/UserOutput/UserOutput.h>
+#include <Engine/Collision/Collision.h>
 
 // Interface
 //==========
@@ -167,6 +168,7 @@ void eae6320::Application::iApplication::UpdateUntilExit()
 		{
 			UpdateBasedOnTime( static_cast<float>( Time::ConvertTicksToSeconds( tickCount_systemTime_elapsedSinceLastLoop ) ) );
 			UpdateBasedOnInput();
+			Collision::CollisionSystemUpdate();
 		}
 		// Update the simulation
 		{

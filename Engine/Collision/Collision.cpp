@@ -5,6 +5,9 @@ namespace eae6320::Collision
 {
 	std::vector<cCollider*> colliderList;
 
+	/// <summary>
+	/// Main function that checks for collisions between all colliders active in system and invokes relevant callbacks. Called in iApplication update.
+	/// </summary>
 	void CollisionSystemUpdate()
 	{
 		//AABB collision check
@@ -35,6 +38,12 @@ namespace eae6320::Collision
 		}
 	}
 
+	/// <summary>
+	/// AABB Collision/intersection check between two axis aligned colliders
+	/// </summary>
+	/// <param name="colliderA">collider reference A</param>
+	/// <param name="colliderB">collider reference B</param>
+	/// <returns>bool true if colliders intersect</returns>
 	bool CollisionCheck(cCollider* colliderA, cCollider* colliderB)
 	{
 		float minXA = colliderA->GetColliderVertices()[0].x;
@@ -90,11 +99,19 @@ namespace eae6320::Collision
 			);
 	}
 
+	/// <summary>
+	/// Add reference of param collider to collider list
+	/// </summary>
+	/// <param name="collider">collider reference to add</param>
 	void AddCollider(cCollider* collider)
 	{
 		colliderList.push_back(collider);
 	}
 
+	/// <summary>
+	/// Removes given reference from collider list
+	/// </summary>
+	/// <param name="collider">collider reference to remove</param>
 	void RemoveCollider(cCollider* collider)
 	{
 		colliderList.erase(std::remove(colliderList.begin(), colliderList.end(), collider), colliderList.end());

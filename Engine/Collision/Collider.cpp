@@ -46,11 +46,18 @@ namespace eae6320::Collision
 		CalculateVertices();
 	}
 
+	/// <summary>
+	/// Destructor, removes collider reference from system
+	/// </summary>
 	cCollider::~cCollider()
 	{
 		RemoveCollider(this);
 	}
 
+	/// <summary>
+	/// Collision system uses this to set colliding state of collider
+	/// </summary>
+	/// <param name="_isColliding">Is currently colliding</param>
 	void cCollider::SetIsColliding(bool _isColliding)
 	{
 		if (isColliding == _isColliding)
@@ -58,11 +65,19 @@ namespace eae6320::Collision
 		isColliding = _isColliding;
 	}
 
+	/// <summary>
+	/// Getter for is colliding state of collider
+	/// </summary>
+	/// <returns>bool isCollding for collider</returns>
 	bool cCollider::GetIsColliding()
 	{
 		return isColliding;
 	}
 
+	/// <summary>
+	/// Getter for collider vertices
+	/// </summary>
+	/// <returns>sVector pointer to list of 8 vertices</returns>
 	eae6320::Math::sVector* cCollider::GetColliderVertices()
 	{
 		return colliderVertices;

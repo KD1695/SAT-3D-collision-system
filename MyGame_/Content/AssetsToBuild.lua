@@ -22,5 +22,6 @@ return
 		"Meshes/helix.json",
 		"Meshes/torus.json",
 		"Meshes/plane.json",
+		"Meshes/cube.json"
 	},
 }

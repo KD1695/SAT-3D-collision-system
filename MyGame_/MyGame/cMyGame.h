@@ -18,6 +18,7 @@
 #include<Engine/Components/GameObject.h>
 #include<Engine/Components/Camera.h>
 #include<Engine/Graphics/Graphics.h>
+#include<Engine/Collision/Collider.h>
 
 // Class Declaration
 //==================
@@ -34,6 +35,7 @@ namespace eae6320
 		float bg_Color[4] = { 0,1,1,1 };
 		eae6320::Components::Camera camera;
 		eae6320::Components::GameObject gameObjects[4];
+		eae6320::Collision::cCollider collider[2];
 		size_t objectCount = 4;
 		bool changeMeshFlag = false;
 

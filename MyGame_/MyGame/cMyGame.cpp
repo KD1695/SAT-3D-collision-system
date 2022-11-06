@@ -17,7 +17,7 @@
 void eae6320::cMyGame::SubmitDataToBeRendered(const float i_elapsedSecondCount_systemTime, const float i_elapsedSecondCount_sinceLastSimulationUpdate)
 {
 	eae6320::Graphics::SetBgColor(bg_Color);
-	eae6320::Graphics::SetMeshEffectData(camera, gameObjects, objectCount);
+	eae6320::Graphics::SetMeshEffectData(camera, gameObjects, 2);
 }
 
 void eae6320::cMyGame::UpdateSimulationBasedOnInput()
@@ -88,6 +88,7 @@ void eae6320::cMyGame::UpdateBasedOnInput()
 void eae6320::cMyGame::UpdateBasedOnTime(const float i_elapsedSecondCount_sinceLastUpdate)
 {
 	gameObjects[0].Update(i_elapsedSecondCount_sinceLastUpdate);
+	gameObjects[1].Update(i_elapsedSecondCount_sinceLastUpdate);
 	camera.Update(i_elapsedSecondCount_sinceLastUpdate);
 }
 
@@ -98,19 +99,25 @@ eae6320::cResult eae6320::cMyGame::Initialize()
 
 	//init gameObjects
 	{
-		if (!(result = gameObjects[0].InitializeMeshEffect("data/Meshes/pyramid_color.json", "data/Shaders/Fragment/standard.shader")))
+		if (!(result = gameObjects[0].InitializeMeshEffect("data/Meshes/cube.json", "data/Shaders/Fragment/standard.shader")))
 		{
 			EAE6320_ASSERTF(false, "Failed Initializing GameObject");
 			return result;
 		}
 	}
+	collider[0] = eae6320::Collision::cCollider(gameObjects[0].GetRigidBodyReference());
+
 	{
-		if (!(result = gameObjects[1].InitializeMeshEffect("data/Meshes/torus.json", "data/Shaders/Fragment/animatedColor.shader")))
+		if (!(result = gameObjects[1].InitializeMeshEffect("data/Meshes/cube.json", "data/Shaders/Fragment/standard.shader")))
 		{
 			EAE6320_ASSERTF(false, "Failed Initializing GameObject");
 			return result;
 		}
 	}
+	gameObjects[1].GetRigidBodyReference()->position = eae6320::Math::sVector(0.5, 0.5, 0);
+	collider[1] = eae6320::Collision::cCollider(gameObjects[1].GetRigidBodyReference());
+
+	/*
 	{
 		if (!(result = gameObjects[2].InitializeMeshEffect("data/Meshes/helix.json", "data/Shaders/Fragment/standard.shader")))
 		{
@@ -124,7 +131,7 @@ eae6320::cResult eae6320::cMyGame::Initialize()
 			EAE6320_ASSERTF(false, "Failed Initializing GameObject");
 			return result;
 		}
-	}
+	}*/
 
 	return result;
 }

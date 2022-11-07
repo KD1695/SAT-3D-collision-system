@@ -88,6 +88,7 @@ namespace eae6320::Collision
 	/// </summary>
 	void cCollider::CalculateVertices()
 	{
+		//Position offset
 		float xOffset = rigidBodyState->position.x;
 		float yOffset = rigidBodyState->position.y;
 		float zOffset = rigidBodyState->position.z;
@@ -125,5 +126,17 @@ namespace eae6320::Collision
 		colliderVertices[7].x = size.x / 2 + xOffset;
 		colliderVertices[7].y = size.y / 2 + yOffset;
 		colliderVertices[7].z = size.z / 2 + zOffset;
+
+		//Rotation
+		sVector4 rotatedVertices[8];
+		const Math::sVector eulerAngles = rigidBodyState->orientation.GetEulerVector();
+		for(size_t i = 0; i < 8; i++)
+		{
+			rotatedVertices[i] = (cMatrix4x4::CreateXRotation(eulerAngles.x)
+									* cMatrix4x4::CreateYRotation(eulerAngles.y)
+									* cMatrix4x4::CreateZRotation(eulerAngles.z))
+									* sVector4(colliderVertices[i].x, colliderVertices[i].y, colliderVertices[i].z, 1);
+			colliderVertices[i] = Math::sVector(rotatedVertices[i].x, rotatedVertices[i].y, rotatedVertices[i].z);
+		}
 	}
 }

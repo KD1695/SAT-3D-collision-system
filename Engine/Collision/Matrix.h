@@ -1,4 +1,5 @@
 #pragma once
+#include "Engine/Math/cQuaternion.h"
 
 namespace eae6320
 {
@@ -9,12 +10,17 @@ namespace eae6320
 			float x, y, z, w;
 
 			sVector4(float x, float y, float z, float w);
+			sVector4();
 		};
 
+		/**
+		 * \brief
+		 * Row vectors based matrix
+		 */
 		class cMatrix4x4
 		{
 		private:
-			float _matrix[4][4] = { 0.0 };
+			float _matrix[4][4] = {{0.0}};
 
 		public:
 			cMatrix4x4();
@@ -31,6 +37,10 @@ namespace eae6320
 			static cMatrix4x4 CreateTransform(float x, float y, float z);
 
 			cMatrix4x4 Transpose();
+
+			static cMatrix4x4 CreateXRotation(float radians);
+			static cMatrix4x4 CreateYRotation(float radians);
+			static cMatrix4x4 CreateZRotation(float radians);
 
 		};
 	}

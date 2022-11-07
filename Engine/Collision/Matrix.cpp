@@ -47,7 +47,7 @@ eae6320::Collision::cMatrix4x4& eae6320::Collision::cMatrix4x4::operator=(const 
 
 eae6320::Collision::cMatrix4x4 eae6320::Collision::cMatrix4x4::operator*(const cMatrix4x4& other) const
 {
-	float arr[4][4] = { 0 };
+	float arr[4][4] = {{0}};
 	for (int i = 0; i < 4; i++)
 	{
 		arr[i][0] = _matrix[i][0] * other.Row(0).x + _matrix[i][1] * other.Row(1).x + _matrix[i][2] * other.Row(2).x + _matrix[i][3] * other.Row(3).x;
@@ -70,7 +70,7 @@ eae6320::Collision::sVector4 eae6320::Collision::cMatrix4x4::operator*(const sVe
 
 eae6320::Collision::cMatrix4x4 eae6320::Collision::cMatrix4x4::CreateIdentity()
 {
-	float arr[4][4] = { 0 };
+	float arr[4][4] = {{0}};
 	for (int i = 0; i < 4; i++)
 		arr[i][i] = 1;
 	return cMatrix4x4(arr);
@@ -78,7 +78,7 @@ eae6320::Collision::cMatrix4x4 eae6320::Collision::cMatrix4x4::CreateIdentity()
 
 eae6320::Collision::cMatrix4x4 eae6320::Collision::cMatrix4x4::CreateScale(float scaleX, float scaleY, float scaleZ)
 {
-	float arr[4][4] = { 0 };
+	float arr[4][4] = {{0}};
 	arr[0][0] = scaleX;
 	arr[1][1] = scaleY;
 	arr[2][2] = scaleZ;
@@ -89,7 +89,7 @@ eae6320::Collision::cMatrix4x4 eae6320::Collision::cMatrix4x4::CreateScale(float
 
 eae6320::Collision::cMatrix4x4 eae6320::Collision::cMatrix4x4::CreateTransform(float x, float y, float z)
 {
-	float arr[4][4] = { 0 };
+	float arr[4][4] = {{0}};
 	for (int i = 0; i < 4; i++)
 		arr[i][i] = 1;
 	arr[3][0] = x;
@@ -111,10 +111,57 @@ eae6320::Collision::cMatrix4x4 eae6320::Collision::cMatrix4x4::Transpose()
 	return cMatrix4x4(arr);
 }
 
+eae6320::Collision::cMatrix4x4 eae6320::Collision::cMatrix4x4::CreateXRotation(float radians)
+{
+	const float sin = sinf(radians);
+	const float cos = cosf(radians);
+	float arr[4][4] = {
+		{1, 0, 0, 0},
+		{0, cos, sin, 0},
+		{0, -sin, cos, 0},
+		{0, 0, 0, 1}};
+	
+	return cMatrix4x4(arr);
+}
+
+eae6320::Collision::cMatrix4x4 eae6320::Collision::cMatrix4x4::CreateYRotation(float radians)
+{
+	const float sin = sinf(radians);
+	const float cos = cosf(radians);
+	float arr[4][4] = {
+		{cos, 0, -sin, 0},
+		{0, 1, 0, 0},
+		{sin, 0, cos, 0},
+		{0, 0, 0, 1}};
+	
+	return cMatrix4x4(arr);
+}
+
+eae6320::Collision::cMatrix4x4 eae6320::Collision::cMatrix4x4::CreateZRotation(float radians)
+{
+	const float sin = sinf(radians);
+	const float cos = cosf(radians);
+	float arr[4][4] = {
+		{cos, sin, 0, 0},
+		{-sin, cos, 0, 0},
+		{0, 0, 1, 0},
+		{0, 0, 0, 1}};
+	
+	return cMatrix4x4(arr);
+}
+
 eae6320::Collision::sVector4::sVector4(float _x, float _y, float _z, float _w)
 {
 	x = _x;
 	y = _y;
 	z = _z;
 	w = _w;
+}
+
+eae6320::Collision::sVector4::sVector4()
+{
+	x = 0;
+	y = 0;
+	z = 0;
+	w = 0;
 }

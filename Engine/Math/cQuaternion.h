@@ -55,6 +55,8 @@ namespace eae6320
 			// Access
 			//-------
 
+			constexpr sVector GetEulerVector() const;
+
 			// Calculating the forward direction involves a variation of calculating a full transformation matrix;
 			// if the transform is already available or will need to be calculated in the future
 			// it is more efficient to extract the forward direction from that

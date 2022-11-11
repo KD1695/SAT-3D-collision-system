@@ -59,32 +59,6 @@ constexpr eae6320::Math::cQuaternion eae6320::Math::cQuaternion::GetInverse() co
 	return cQuaternion( m_w, -m_x, -m_y, -m_z );
 }
 
-// Access
-//-------
-
-constexpr eae6320::Math::sVector eae6320::Math::cQuaternion::GetEulerVector() const
-{
-	sVector eulerAngles;
-	// roll (x-axis rotation)
-	double sinr_cosp = 2 * (m_w * m_x + m_y * m_z);
-	double cosr_cosp = 1 - 2 * (m_x * m_x + m_y * m_y);
-	eulerAngles.x = std::atan2(sinr_cosp, cosr_cosp);
-
-	// pitch (y-axis rotation)
-	double sinp = 2 * (m_w * m_y - m_z * m_x);
-	if (std::abs(sinp) >= 1)
-		eulerAngles.y = std::copysign(M_PI / 2, sinp); // use 90 degrees if out of range
-	else
-		eulerAngles.y = std::asin(sinp);
-
-	// yaw (z-axis rotation)
-	double siny_cosp = 2 * (m_w * m_z + m_x * m_y);
-	double cosy_cosp = 1 - 2 * (m_y * m_y + m_z * m_z);
-	eulerAngles.z = std::atan2(siny_cosp, cosy_cosp);
-
-	return eulerAngles;
-}
-
 constexpr eae6320::Math::sVector eae6320::Math::cQuaternion::CalculateForwardDirection() const
 {
 	const auto _2x = m_x + m_x;

@@ -41,6 +41,25 @@ eae6320::Math::cQuaternion eae6320::Math::cQuaternion::GetNormalized() const
 	return cQuaternion( m_w * length_reciprocal, m_x * length_reciprocal, m_y * length_reciprocal, m_z * length_reciprocal );
 }
 
+eae6320::Math::sVector eae6320::Math::cQuaternion::GetEulerVector()
+{
+	// roll (x-axis rotation)
+	const float sinr_cosp = 2 * (m_w * m_x + m_y * m_z);
+	const float cosr_cosp = 1 - 2 * (m_x * m_x + m_y * m_y);
+	const auto x = (float)std::atan2(sinr_cosp, cosr_cosp);
+
+	// pitch (y-axis rotation)
+	float sinp = 2 * (m_w * m_y - m_z * m_x);
+	const auto y = (std::abs(sinp) >= 1) ? (float)std::copysign(M_PI / 2, sinp) : std::asin(sinp); // use 90 degrees if out of range
+
+	// yaw (z-axis rotation)
+	float siny_cosp = 2 * (m_w * m_z + m_x * m_y);
+	float cosy_cosp = 1 - 2 * (m_y * m_y + m_z * m_z);
+	const auto z = (float)std::atan2(siny_cosp, cosy_cosp);
+
+	return sVector(x,y,z);
+}
+
 // Initialize / Clean Up
 //----------------------
 

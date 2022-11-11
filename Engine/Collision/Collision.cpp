@@ -1,5 +1,4 @@
 #include <Engine/Collision/Collision.h>
-#include <Engine/Collision/Collider.h>
 
 namespace eae6320::Collision
 {
@@ -23,15 +22,15 @@ namespace eae6320::Collision
 				{
 					colliderList[i]->CalculateVertices();
 					colliderList[j]->CalculateVertices();
-					if (CollisionCheck(colliderList[i], colliderList[j]) && CollisionCheck(colliderList[j], colliderList[i]))
+					if (CollisionCheckAABB(colliderList[i], colliderList[j]) && CollisionCheckAABB(colliderList[j], colliderList[i]))
 					{
-						colliderList[i]->SetIsColliding(true);
-						colliderList[j]->SetIsColliding(true);
+						colliderList[i]->SetIsColliding(true, colliderList[j]);
+						colliderList[j]->SetIsColliding(true, colliderList[i]);
 					}
 					else
 					{
-						colliderList[i]->SetIsColliding(false);
-						colliderList[j]->SetIsColliding(false);
+						colliderList[i]->SetIsColliding(false, colliderList[j]);
+						colliderList[j]->SetIsColliding(false, colliderList[i]);
 					}
 				}
 			}
@@ -44,7 +43,7 @@ namespace eae6320::Collision
 	/// <param name="colliderA">collider reference A</param>
 	/// <param name="colliderB">collider reference B</param>
 	/// <returns>bool true if colliders intersect</returns>
-	bool CollisionCheck(cCollider* colliderA, cCollider* colliderB)
+	bool CollisionCheckAABB(cCollider* colliderA, cCollider* colliderB)
 	{
 		float minXA = colliderA->GetColliderVertices()[0].x;
 		float maxXA = colliderA->GetColliderVertices()[0].x;
@@ -97,6 +96,12 @@ namespace eae6320::Collision
 			minZA <= maxZB &&
 			maxZA >= minZB
 			);
+	}
+
+	bool CollisionCheckSAT(cCollider* colliderA, cCollider* colliderB, Math::sVector axis)
+	{
+		
+		return false;
 	}
 
 	/// <summary>

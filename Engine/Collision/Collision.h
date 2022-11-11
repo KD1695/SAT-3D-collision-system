@@ -1,6 +1,8 @@
 #pragma once
 #include <vector>
 
+#include "Collider.h"
+
 namespace eae6320
 {
 	namespace Collision
@@ -10,6 +12,7 @@ namespace eae6320
 		void AddCollider(cCollider* collider);
 		void RemoveCollider(cCollider* collider);
 		void CollisionSystemUpdate();
-		bool CollisionCheck(cCollider* colliderA, cCollider* colliderB);
+		bool CollisionCheckAABB(cCollider* colliderA, cCollider* colliderB);
+		bool CollisionCheckSAT(cCollider* colliderA, cCollider* colliderB, Math::sVector axis);
 	}
 }

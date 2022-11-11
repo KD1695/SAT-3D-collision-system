@@ -3,6 +3,8 @@
 #include <corecrt_math.h>
 #include <Engine/Logging/Logging.h>
 
+#include <utility>
+
 namespace eae6320::Collision
 {
 
@@ -52,17 +54,41 @@ namespace eae6320::Collision
 	cCollider::~cCollider()
 	{
 		RemoveCollider(this);
+		rigidBodyState = nullptr;
 	}
 
 	/// <summary>
-	/// Collision system uses this to set colliding state of collider
+	/// Collision system uses this to set colliding state of collider and invoke callback
 	/// </summary>
 	/// <param name="_isColliding">Is currently colliding</param>
-	void cCollider::SetIsColliding(bool _isColliding)
+	/// <param name="other">other collider in collision</param>
+	void cCollider::SetIsColliding(bool _isColliding, cCollider* other)
 	{
 		if (isColliding == _isColliding)
 			return;
 		isColliding = _isColliding;
+		if(isColliding)
+		{
+			if(isCallbackSetEnter)
+				callback_function_on_enter(this, other);
+		}
+		else
+		{
+			if(isCallbackSetExit)
+				callback_function_on_exit(this, other);
+		}
+	}
+
+	void cCollider::SetOnCollisionEnterCallback(std::function<bool(cCollider* self, cCollider* other)> func)
+	{
+		callback_function_on_enter = std::move(func);
+		isCallbackSetEnter = true;
+	}
+
+	void cCollider::SetOnCollisionExitCallback(std::function<bool(cCollider* self, cCollider* other)> func)
+	{
+		callback_function_on_exit = std::move(func);
+		isCallbackSetExit = true;
 	}
 
 	/// <summary>

@@ -91,8 +91,11 @@ namespace eae6320
 
 		cResult Initialize() final;
 		cResult CleanUp() final;
-
 	};
+	//Collision Callbacks
+	//----
+	bool OnCollisionEnter(Collision::cCollider* self, Collision::cCollider* other);
+	bool OnCollisionExit(Collision::cCollider* self, Collision::cCollider* other);
 }
 
 // Result Definitions

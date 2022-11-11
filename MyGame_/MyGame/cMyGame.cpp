@@ -106,6 +106,8 @@ eae6320::cResult eae6320::cMyGame::Initialize()
 		}
 	}
 	collider[0] = eae6320::Collision::cCollider(gameObjects[0].GetRigidBodyReference());
+	collider[0].SetOnCollisionEnterCallback(&OnCollisionEnter);
+	collider[0].SetOnCollisionExitCallback(&OnCollisionExit);
 
 	{
 		if (!(result = gameObjects[1].InitializeMeshEffect("data/Meshes/cube.json", "data/Shaders/Fragment/standard.shader")))
@@ -146,4 +148,16 @@ eae6320::cResult eae6320::cMyGame::CleanUp()
 	}
 
 	return Results::Success;
+}
+
+bool eae6320::OnCollisionEnter(Collision::cCollider* self, Collision::cCollider* other)
+{
+	eae6320::Logging::OutputMessage("Collision Enter");
+	return true;
+}
+
+bool eae6320::OnCollisionExit(Collision::cCollider* self, Collision::cCollider* other)
+{
+	eae6320::Logging::OutputMessage("Collision Exit");
+	return true;
 }

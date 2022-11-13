@@ -109,6 +109,30 @@ namespace eae6320::Collision
 		return colliderVertices;
 	}
 
+	size_t cCollider::GetColliderMeshVertexData(eae6320::Graphics::VertexFormats::sVertex_mesh** o_vertexData)
+	{
+		CalculateVertices();
+		Graphics::VertexFormats::sVertex_mesh vertexData[8];
+		for(size_t i=0; i<8; i++)
+		{
+			vertexData[i].x = colliderVertices[i].x;
+			vertexData[i].y = colliderVertices[i].y;
+			vertexData[i].z = colliderVertices[i].z + 0.001f;
+			vertexData[i].r = 0;
+			vertexData[i].g = 255;
+			vertexData[i].b = 0;
+			vertexData[i].a = 122;
+		}
+		memcpy(*o_vertexData, vertexData, sizeof(Graphics::VertexFormats::sVertex_mesh)*8);
+		return 8;
+	}
+
+	size_t cCollider::GetColliderMeshIndexData(uint16_t** o_indexData)
+	{
+		*o_indexData = colliderIndexData;
+		return 36;
+	}
+
 	/// <summary>
 	/// Calculate world position of collider vertices based on size and position 
 	/// </summary>
@@ -119,50 +143,56 @@ namespace eae6320::Collision
 		float yOffset = rigidBodyState->position.y;
 		float zOffset = rigidBodyState->position.z;
 
-		//bottom 4 vertices going clockwise from front left
-		colliderVertices[0].x = -size.x / 2 + xOffset;
-		colliderVertices[0].y = -size.y / 2 + yOffset;
-		colliderVertices[0].z = size.z / 2 + zOffset;
+		//Front face starting top left going TL->TR->BL->BR
+		colliderVertices[0].x = -size.x / 2;
+		colliderVertices[0].y = size.y / 2;
+		colliderVertices[0].z = size.z / 2;
 
-		colliderVertices[1].x = -size.x / 2 + xOffset;
-		colliderVertices[1].y = -size.y / 2 + yOffset;
-		colliderVertices[1].z = -size.z / 2 + zOffset;
+		colliderVertices[1].x = size.x / 2;
+		colliderVertices[1].y = size.y / 2;
+		colliderVertices[1].z = size.z / 2;
 
-		colliderVertices[2].x = size.x / 2 + xOffset;
-		colliderVertices[2].y = -size.y / 2 + yOffset;
-		colliderVertices[2].z = -size.z / 2 + zOffset;
+		colliderVertices[2].x = -size.x / 2;
+		colliderVertices[2].y = -size.y / 2;
+		colliderVertices[2].z = size.z / 2;
 
-		colliderVertices[3].x = size.x / 2 + xOffset;
-		colliderVertices[3].y = -size.y / 2 + yOffset;
-		colliderVertices[3].z = size.z / 2 + zOffset;
+		colliderVertices[3].x = size.x / 2;
+		colliderVertices[3].y = -size.y / 2;
+		colliderVertices[3].z = size.z / 2;
 
-		//top 4 vertices going clockwise from front left
-		colliderVertices[4].x = -size.x / 2 + xOffset;
-		colliderVertices[4].y = size.y / 2 + yOffset;
-		colliderVertices[4].z = size.z / 2 + zOffset;
+		//Back face starting top left going TL->TR->BL->BR
+		colliderVertices[4].x = -size.x / 2;
+		colliderVertices[4].y = size.y / 2;
+		colliderVertices[4].z = -size.z / 2;
 
-		colliderVertices[5].x = -size.x / 2 + xOffset;
-		colliderVertices[5].y = size.y / 2 + yOffset;
-		colliderVertices[5].z = -size.z / 2 + zOffset;
+		colliderVertices[5].x = size.x / 2;
+		colliderVertices[5].y = size.y / 2;
+		colliderVertices[5].z = -size.z / 2;
 
-		colliderVertices[6].x = size.x / 2 + xOffset;
-		colliderVertices[6].y = size.y / 2 + yOffset;
-		colliderVertices[6].z = -size.z / 2 + zOffset;
+		colliderVertices[6].x = -size.x / 2;
+		colliderVertices[6].y = -size.y / 2;
+		colliderVertices[6].z = -size.z / 2;
 
-		colliderVertices[7].x = size.x / 2 + xOffset;
-		colliderVertices[7].y = size.y / 2 + yOffset;
-		colliderVertices[7].z = size.z / 2 + zOffset;
+		colliderVertices[7].x = size.x / 2;
+		colliderVertices[7].y = -size.y / 2;
+		colliderVertices[7].z = -size.z / 2;
 
+		sVector4 updatedVertices[8];
 		//Rotation
-		sVector4 rotatedVertices[8];
 		const Math::sVector eulerAngles = rigidBodyState->orientation.GetEulerVector();
 		for(size_t i = 0; i < 8; i++)
 		{
-			rotatedVertices[i] = (cMatrix4x4::CreateXRotation(eulerAngles.x)
-									* cMatrix4x4::CreateYRotation(eulerAngles.y)
+			updatedVertices[i] = ((cMatrix4x4::CreateXRotation(eulerAngles.x)
+									* cMatrix4x4::CreateYRotation(eulerAngles.y))
 									* cMatrix4x4::CreateZRotation(eulerAngles.z))
 									* sVector4(colliderVertices[i].x, colliderVertices[i].y, colliderVertices[i].z, 1);
-			colliderVertices[i] = Math::sVector(rotatedVertices[i].x, rotatedVertices[i].y, rotatedVertices[i].z);
+		}
+
+		//Translation
+		for(size_t i = 0; i < 8; i++)
+		{
+			updatedVertices[i] = cMatrix4x4::CreateTransform(rigidBodyState->position.x, rigidBodyState->position.y, rigidBodyState->position.z) * updatedVertices[i];
+			colliderVertices[i] = Math::sVector(updatedVertices[i].x, updatedVertices[i].y, updatedVertices[i].z);
 		}
 	}
 }

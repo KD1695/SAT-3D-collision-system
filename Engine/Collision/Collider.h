@@ -4,6 +4,8 @@
 #include <Engine/Math/sVector.h>
 #include <Engine/Collision/Matrix.h>
 
+#include "Engine/Graphics/Graphics.h"
+
 namespace eae6320
 {
 	namespace Collision
@@ -19,6 +21,20 @@ namespace eae6320
 			std::function<bool(cCollider*, cCollider*)> callback_function_on_exit;
 			bool isCallbackSetEnter = false;
 			bool isCallbackSetExit = false;
+			uint16_t colliderIndexData[36] = {
+				2,3,0,
+				2,7,3,
+				3,7,1,
+				0,3,1,
+				0,1,4,
+				1,7,5,
+				4,2,0,
+				4,1,5,
+				4,5,6,
+				6,5,7,
+				6,7,2,
+				6,2,4
+			};
 
 		public:
 			void CalculateVertices();
@@ -28,6 +44,8 @@ namespace eae6320
 			void SetIsColliding(bool isColliding, cCollider* other);
 			bool GetIsColliding();
 			eae6320::Math::sVector* GetColliderVertices();
+			size_t GetColliderMeshVertexData(eae6320::Graphics::VertexFormats::sVertex_mesh** o_vertexData);
+			size_t GetColliderMeshIndexData(uint16_t** o_indexData);
 			void SetOnCollisionEnterCallback(std::function<bool(cCollider* self, cCollider* other)> func);
 			void SetOnCollisionExitCallback(std::function<bool(cCollider* self, cCollider* other)> func);
 			~cCollider();

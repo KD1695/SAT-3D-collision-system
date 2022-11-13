@@ -36,6 +36,7 @@ namespace eae6320
 		eae6320::Components::Camera camera;
 		eae6320::Components::GameObject gameObjects[4];
 		eae6320::Collision::cCollider collider[2];
+		eae6320::Graphics::cMesh* colliderMesh;
 		size_t objectCount = 4;
 		bool changeMeshFlag = false;
 

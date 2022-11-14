@@ -11,6 +11,7 @@ namespace eae6320
 
 			sVector4(float x, float y, float z, float w);
 			sVector4();
+			sVector4 operator*(const sVector4& other) const;
 		};
 
 		/**

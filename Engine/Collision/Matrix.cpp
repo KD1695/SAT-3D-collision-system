@@ -58,6 +58,11 @@ eae6320::Collision::cMatrix4x4 eae6320::Collision::cMatrix4x4::operator*(const c
 	return cMatrix4x4(arr);
 }
 
+eae6320::Collision::sVector4 eae6320::Collision::sVector4::operator*(const sVector4& other) const
+{
+	return sVector4(y*other.z-z*other.y, -(x*other.z-z*other.x), x*other.y-y*other.x, 1);
+}
+
 eae6320::Collision::sVector4 eae6320::Collision::cMatrix4x4::operator*(const sVector4& other) const
 {
 	float arr[4] = { 0 };

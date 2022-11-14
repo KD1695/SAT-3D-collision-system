@@ -48,6 +48,11 @@ namespace eae6320::Collision
 		CalculateVertices();
 	}
 
+	void cCollider::Update(float i_secondCountToIntegrate)
+	{
+		transform = rigidBodyState->PredictFutureTransform(i_secondCountToIntegrate);
+	}
+
 	/// <summary>
 	/// Destructor, removes collider reference from system
 	/// </summary>
@@ -107,6 +112,21 @@ namespace eae6320::Collision
 	eae6320::Math::sVector* cCollider::GetColliderVertices()
 	{
 		return colliderVertices;
+	}
+
+	sVector4 cCollider::GetUpNormal()
+	{
+		return sVector4(transform.GetUpDirection().x, transform.GetUpDirection().y, transform.GetUpDirection().z, 1);
+	}
+
+	sVector4 cCollider::GetRightNormal()
+	{
+		return sVector4(transform.GetRightDirection().x, transform.GetRightDirection().y, transform.GetRightDirection().z, 1);
+	}
+
+	sVector4 cCollider::GetBackNormal()
+	{
+		return sVector4(transform.GetBackDirection().x, transform.GetBackDirection().y, transform.GetBackDirection().z, 1);
 	}
 
 	size_t cCollider::GetColliderMeshVertexData(eae6320::Graphics::VertexFormats::sVertex_mesh** o_vertexData)

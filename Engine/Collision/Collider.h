@@ -35,15 +35,20 @@ namespace eae6320
 				6,7,2,
 				6,2,4
 			};
+			eae6320::Math::cMatrix_transformation transform;
 
 		public:
 			void CalculateVertices();
 			cCollider(eae6320::Math::sVector size = eae6320::Math::sVector(1, 1, 1));
 			cCollider(eae6320::Physics::sRigidBodyState* rigidBodyState, eae6320::Math::sVector size = eae6320::Math::sVector(1, 1, 1));
 			void SetSize(float x, float y, float z);
+			void Update(float i_secondCountToIntegrate);
 			void SetIsColliding(bool isColliding, cCollider* other);
 			bool GetIsColliding();
 			eae6320::Math::sVector* GetColliderVertices();
+			sVector4 GetUpNormal();
+			sVector4 GetRightNormal();
+			sVector4 GetBackNormal();
 			size_t GetColliderMeshVertexData(eae6320::Graphics::VertexFormats::sVertex_mesh** o_vertexData);
 			size_t GetColliderMeshIndexData(uint16_t** o_indexData);
 			void SetOnCollisionEnterCallback(std::function<bool(cCollider* self, cCollider* other)> func);

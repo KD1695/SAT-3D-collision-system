@@ -17,7 +17,7 @@
 void eae6320::cMyGame::SubmitDataToBeRendered(const float i_elapsedSecondCount_systemTime, const float i_elapsedSecondCount_sinceLastSimulationUpdate)
 {
 	eae6320::Graphics::SetBgColor(bg_Color);
-	eae6320::Graphics::SetMeshEffectData(camera, gameObjects, 2);
+	eae6320::Graphics::SetMeshEffectData(camera, gameObjects, 3);
 }
 
 void eae6320::cMyGame::UpdateSimulationBasedOnInput()
@@ -98,8 +98,7 @@ void eae6320::cMyGame::UpdateSimulationBasedOnInput()
 	else
 		camera.SetVelocity(Math::sVector(0, 0, 0));
 
-	//if (UserInput::IsKeyPressed(UserInput::KeyCodes::Space))
-	{
+	
 		//load collider mesh for visual
 		{
 			auto result = eae6320::Results::Success;
@@ -114,7 +113,7 @@ void eae6320::cMyGame::UpdateSimulationBasedOnInput()
 			}
 			gameObjects[1].SetMesh(colliderMesh);
 		}
-	}
+	//}
 
 }
 
@@ -135,7 +134,10 @@ void eae6320::cMyGame::UpdateBasedOnInput()
 void eae6320::cMyGame::UpdateBasedOnTime(const float i_elapsedSecondCount_sinceLastUpdate)
 {
 	gameObjects[0].Update(i_elapsedSecondCount_sinceLastUpdate);
+	gameObjects[2].Update(i_elapsedSecondCount_sinceLastUpdate);
 	camera.Update(i_elapsedSecondCount_sinceLastUpdate);
+	collider[0].Update(i_elapsedSecondCount_sinceLastUpdate);
+	collider[1].Update(i_elapsedSecondCount_sinceLastUpdate);
 }
 
 eae6320::cResult eae6320::cMyGame::Initialize()
@@ -151,19 +153,9 @@ eae6320::cResult eae6320::cMyGame::Initialize()
 			return result;
 		}
 	}
-	collider[0] = eae6320::Collision::cCollider(gameObjects[0].GetRigidBodyReference());
+	collider[0] = eae6320::Collision::cCollider(gameObjects[0].GetRigidBodyReference(), Math::sVector(2,2,2));
 	collider[0].SetOnCollisionEnterCallback(&OnCollisionEnter);
 	collider[0].SetOnCollisionExitCallback(&OnCollisionExit);
-
-	// {
-	// 	if (!(result = gameObjects[1].InitializeMeshEffect("data/Meshes/cube.json", "data/Shaders/Fragment/standard.shader")))
-	// 	{
-	// 		EAE6320_ASSERTF(false, "Failed Initializing GameObject");
-	// 		return result;
-	// 	}
-	// }
-	// gameObjects[1].GetRigidBodyReference()->position = eae6320::Math::sVector(0.5, 0.5, 0);
-	// collider[1] = eae6320::Collision::cCollider(gameObjects[1].GetRigidBodyReference());
 	
 	//load collider mesh for visual
 	{
@@ -186,6 +178,16 @@ eae6320::cResult eae6320::cMyGame::Initialize()
 		}
 		gameObjects[1].SetMesh(colliderMesh);
 	}
+
+	{
+		if (!(result = gameObjects[2].InitializeMeshEffect("data/Meshes/cube.json", "data/Shaders/Fragment/standard.shader")))
+		{
+			EAE6320_ASSERTF(false, "Failed Initializing GameObject");
+			return result;
+		}
+	}
+	gameObjects[2].GetRigidBodyReference()->position = eae6320::Math::sVector(1.1f, 0.5, 0);
+	collider[1] = eae6320::Collision::cCollider(gameObjects[2].GetRigidBodyReference());
 
 	return result;
 }

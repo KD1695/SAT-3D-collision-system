@@ -22,16 +22,51 @@ namespace eae6320::Collision
 				{
 					colliderList[i]->CalculateVertices();
 					colliderList[j]->CalculateVertices();
-					if (CollisionCheckAABB(colliderList[i], colliderList[j]) && CollisionCheckAABB(colliderList[j], colliderList[i]))
+
+					sVector4 listOfAxisToCheck[15];
+					//face normals
+					listOfAxisToCheck[0] = colliderList[i]->GetUpNormal();
+					listOfAxisToCheck[1] = colliderList[i]->GetRightNormal();
+					listOfAxisToCheck[2] = colliderList[i]->GetBackNormal();
+					listOfAxisToCheck[3] = colliderList[j]->GetUpNormal();
+					listOfAxisToCheck[4] = colliderList[j]->GetRightNormal();
+					listOfAxisToCheck[5] = colliderList[j]->GetBackNormal();
+					//normals cross product 
+					listOfAxisToCheck[6] = listOfAxisToCheck[0] * listOfAxisToCheck[3];
+					listOfAxisToCheck[7] = listOfAxisToCheck[0] * listOfAxisToCheck[4];
+					listOfAxisToCheck[8] = listOfAxisToCheck[0] * listOfAxisToCheck[5];
+					listOfAxisToCheck[9] = listOfAxisToCheck[1] * listOfAxisToCheck[3];
+					listOfAxisToCheck[10] = listOfAxisToCheck[1] * listOfAxisToCheck[4];
+					listOfAxisToCheck[11] = listOfAxisToCheck[1] * listOfAxisToCheck[5];
+					listOfAxisToCheck[12] = listOfAxisToCheck[2] * listOfAxisToCheck[3];
+					listOfAxisToCheck[13] = listOfAxisToCheck[2] * listOfAxisToCheck[4];
+					listOfAxisToCheck[14] = listOfAxisToCheck[2] * listOfAxisToCheck[5];
+
+					for(size_t k=0; k<15; k++)
 					{
-						colliderList[i]->SetIsColliding(true, colliderList[j]);
-						colliderList[j]->SetIsColliding(true, colliderList[i]);
+						if(!CollisionCheckSAT(colliderList[i], colliderList[j], listOfAxisToCheck[k]))
+						{
+							colliderList[i]->SetIsColliding(false, colliderList[j]);
+							colliderList[j]->SetIsColliding(false, colliderList[i]);
+							break;
+						}
+						else if(k==14)
+						{
+							colliderList[i]->SetIsColliding(true, colliderList[j]);
+							colliderList[j]->SetIsColliding(true, colliderList[i]);
+						}
 					}
-					else
-					{
-						colliderList[i]->SetIsColliding(false, colliderList[j]);
-						colliderList[j]->SetIsColliding(false, colliderList[i]);
-					}
+
+					// if (CollisionCheckAABB(colliderList[i], colliderList[j]) && CollisionCheckAABB(colliderList[j], colliderList[i]))
+					// {
+					// 	colliderList[i]->SetIsColliding(true, colliderList[j]);
+					// 	colliderList[j]->SetIsColliding(true, colliderList[i]);
+					// }
+					// else
+					// {
+					// 	colliderList[i]->SetIsColliding(false, colliderList[j]);
+					// 	colliderList[j]->SetIsColliding(false, colliderList[i]);
+					// }
 				}
 			}
 		}
@@ -98,10 +133,50 @@ namespace eae6320::Collision
 			);
 	}
 
-	bool CollisionCheckSAT(cCollider* colliderA, cCollider* colliderB, Math::sVector axis)
+	inline float Min(float a, float b)
 	{
-		
-		return false;
+		return (a < b) ? a : b;
+	}
+
+	inline float Max(float a, float b)
+	{
+		return (a > b) ? a : b;
+	}
+	
+	bool CollisionCheckSAT(cCollider* colliderA, cCollider* colliderB, sVector4 axis)
+	{
+		if(axis.x == 0 && axis.y == 0 && axis.z == 0)
+			return true;
+		float maxProjectionA = FLT_MIN;
+		float minProjectionA = FLT_MAX;
+		for(size_t i=0; i<8; i++)
+		{
+			sVector4 vertexWorldPositon = sVector4(colliderA->GetColliderVertices()[i].x, colliderA->GetColliderVertices()[i].y, colliderA->GetColliderVertices()[i].z, 1);
+			float projection = vertexWorldPositon.x * axis.x + vertexWorldPositon.y * axis.y + vertexWorldPositon.z * axis.z;
+			maxProjectionA = Max(maxProjectionA, projection);
+			minProjectionA = Min(minProjectionA, projection);
+		}
+
+		float maxProjectionB = FLT_MIN;
+		float minProjectionB = FLT_MAX;
+		for(size_t i=0; i<8; i++)
+		{
+			sVector4 vertexWorldPositon = sVector4(colliderB->GetColliderVertices()[i].x, colliderB->GetColliderVertices()[i].y, colliderB->GetColliderVertices()[i].z, 1);
+			float projection = vertexWorldPositon.x * axis.x + vertexWorldPositon.y * axis.y + vertexWorldPositon.z * axis.z;
+			maxProjectionB = Max(maxProjectionB, projection);
+			minProjectionB = Min(minProjectionB, projection);
+		}
+
+		//compare overlap
+		if ((minProjectionA <= maxProjectionB && minProjectionA >= minProjectionB) || (minProjectionB <= maxProjectionA && minProjectionB >= minProjectionA))
+		{
+			//overlap exists
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 	}
 
 	/// <summary>

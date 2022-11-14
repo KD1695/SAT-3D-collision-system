@@ -13,6 +13,6 @@ namespace eae6320
 		void RemoveCollider(cCollider* collider);
 		void CollisionSystemUpdate();
 		bool CollisionCheckAABB(cCollider* colliderA, cCollider* colliderB);
-		bool CollisionCheckSAT(cCollider* colliderA, cCollider* colliderB, Math::sVector axis);
+		bool CollisionCheckSAT(cCollider* colliderA, cCollider* colliderB, sVector4 axis);
 	}
 }

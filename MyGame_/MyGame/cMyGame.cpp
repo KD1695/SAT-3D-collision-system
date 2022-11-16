@@ -50,21 +50,18 @@ void eae6320::cMyGame::UpdateSimulationBasedOnInput()
 	if (UserInput::IsKeyPressed('Z'))
 	{
 		//move left
-		//gameObjects[0].SetVelocity(Math::sVector(-10, 0, 0));
 		gameObjects[0].GetRigidBodyReference()->angularVelocity_axis_local = Math::sVector(0,1,0);
 		gameObjects[0].GetRigidBodyReference()->angularSpeed = 0.1f;
 	}
 	else if (UserInput::IsKeyPressed('X'))
 	{
 		//move right
-		// gameObjects[0].SetVelocity(Math::sVector(10, 0, 0));
 		gameObjects[0].GetRigidBodyReference()->angularVelocity_axis_local = Math::sVector(0,0,1);
 		gameObjects[0].GetRigidBodyReference()->angularSpeed = 0.1f;
 	}
 	else if (UserInput::IsKeyPressed('C'))
 	{
 		//move up
-		// gameObjects[0].SetVelocity(Math::sVector(0, 0, -10));
 		gameObjects[0].GetRigidBodyReference()->angularVelocity_axis_local = Math::sVector(1,0,0);
 		gameObjects[0].GetRigidBodyReference()->angularSpeed = 0.1f;
 	}

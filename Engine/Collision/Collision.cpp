@@ -143,6 +143,13 @@ namespace eae6320::Collision
 		return (a > b) ? a : b;
 	}
 	
+	/// <summary>
+	/// Separating Axis Theorem based collision detection check given 2 colliders and 1 axis
+	/// </summary>
+	/// <param name="colliderA">colliderA</param>
+	/// <param name="colliderB">colliderB</param>
+	/// <param name="axis">Axis of separation to check for</param>
+	/// <returns>bool isColliding</returns>
 	bool CollisionCheckSAT(cCollider* colliderA, cCollider* colliderB, sVector4 axis)
 	{
 		if(axis.x == 0 && axis.y == 0 && axis.z == 0)

@@ -48,6 +48,10 @@ namespace eae6320::Collision
 		CalculateVertices();
 	}
 
+	/// <summary>
+	/// Update for collider - udpates collider transform
+	/// </summary>
+	/// <param name="i_secondCountToIntegrate">frame time in seconds from update</param>
 	void cCollider::Update(float i_secondCountToIntegrate)
 	{
 		transform = rigidBodyState->PredictFutureTransform(i_secondCountToIntegrate);
@@ -84,12 +88,20 @@ namespace eae6320::Collision
 		}
 	}
 
+	/// <summary>
+	/// Set a callback on collision enter
+	/// </summary>
+	/// <param name="func">function with 2 collider pointers as params</param>
 	void cCollider::SetOnCollisionEnterCallback(std::function<bool(cCollider* self, cCollider* other)> func)
 	{
 		callback_function_on_enter = std::move(func);
 		isCallbackSetEnter = true;
 	}
 
+	/// <summary>
+	/// Set a callback on collision exit
+	/// </summary>
+	/// <param name="func">function with 2 collider pointers as params</param>
 	void cCollider::SetOnCollisionExitCallback(std::function<bool(cCollider* self, cCollider* other)> func)
 	{
 		callback_function_on_exit = std::move(func);
@@ -114,21 +126,38 @@ namespace eae6320::Collision
 		return colliderVertices;
 	}
 
+	/// <summary>
+	/// Get up direction from transform
+	/// </summary>
+	/// <returns>sVector4 up normal</returns>
 	sVector4 cCollider::GetUpNormal()
 	{
 		return sVector4(transform.GetUpDirection().x, transform.GetUpDirection().y, transform.GetUpDirection().z, 1);
 	}
 
+	/// <summary>
+	/// Get right direction from transform
+	/// </summary>
+	/// <returns>sVector4 right normal</returns>
 	sVector4 cCollider::GetRightNormal()
 	{
 		return sVector4(transform.GetRightDirection().x, transform.GetRightDirection().y, transform.GetRightDirection().z, 1);
 	}
 
+	/// <summary>
+	/// Get back direction from transform
+	/// </summary>
+	/// <returns>sVector4 back normal</returns>
 	sVector4 cCollider::GetBackNormal()
 	{
 		return sVector4(transform.GetBackDirection().x, transform.GetBackDirection().y, transform.GetBackDirection().z, 1);
 	}
 
+	/// <summary>
+	/// Receive vertexData for a mesh that can represent current state of the collider
+	/// </summary>
+	/// <param name="o_vertexData">vertexData representing the collider</param>
+	/// <returns>size_t vertexCount</returns>
 	size_t cCollider::GetColliderMeshVertexData(eae6320::Graphics::VertexFormats::sVertex_mesh** o_vertexData)
 	{
 		CalculateVertices();
@@ -147,6 +176,11 @@ namespace eae6320::Collision
 		return 8;
 	}
 
+	/// <summary>
+	/// Receive indexData for a mesh that can represent current state of the collider
+	/// </summary>
+	/// <param name="o_indexData">indexData representing the collider</param>
+	/// <returns>size_t indexCount</returns>
 	size_t cCollider::GetColliderMeshIndexData(uint16_t** o_indexData)
 	{
 		*o_indexData = colliderIndexData;

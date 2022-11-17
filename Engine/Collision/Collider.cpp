@@ -112,9 +112,19 @@ namespace eae6320::Collision
 	/// Getter for is colliding state of collider
 	/// </summary>
 	/// <returns>bool isCollding for collider</returns>
-	bool cCollider::GetIsColliding()
+	bool cCollider::GetIsColliding() const
 	{
 		return isColliding;
+	}
+
+	bool cCollider::GetIsActive() const
+	{
+		return isActive;
+	}
+
+	void cCollider::SetIsActive(bool _isActive)
+	{
+		isActive = _isActive;
 	}
 
 	/// <summary>
@@ -130,7 +140,7 @@ namespace eae6320::Collision
 	/// Get up direction from transform
 	/// </summary>
 	/// <returns>sVector4 up normal</returns>
-	sVector4 cCollider::GetUpNormal()
+	sVector4 cCollider::GetUpNormal() const
 	{
 		return sVector4(transform.GetUpDirection().x, transform.GetUpDirection().y, transform.GetUpDirection().z, 1);
 	}
@@ -139,7 +149,7 @@ namespace eae6320::Collision
 	/// Get right direction from transform
 	/// </summary>
 	/// <returns>sVector4 right normal</returns>
-	sVector4 cCollider::GetRightNormal()
+	sVector4 cCollider::GetRightNormal() const
 	{
 		return sVector4(transform.GetRightDirection().x, transform.GetRightDirection().y, transform.GetRightDirection().z, 1);
 	}
@@ -148,7 +158,7 @@ namespace eae6320::Collision
 	/// Get back direction from transform
 	/// </summary>
 	/// <returns>sVector4 back normal</returns>
-	sVector4 cCollider::GetBackNormal()
+	sVector4 cCollider::GetBackNormal() const
 	{
 		return sVector4(transform.GetBackDirection().x, transform.GetBackDirection().y, transform.GetBackDirection().z, 1);
 	}

@@ -54,7 +54,11 @@ namespace eae6320
 
 			// Access
 			//-------
-
+			
+			/// <summary>
+			/// Returns quaternion as euler angles
+			/// </summary>
+			/// <returns>svector with x,y,z axis rotation values</returns>
 			sVector GetEulerVector();
 
 			// Calculating the forward direction involves a variation of calculating a full transformation matrix;

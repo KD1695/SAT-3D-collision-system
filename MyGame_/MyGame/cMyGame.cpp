@@ -96,22 +96,20 @@ void eae6320::cMyGame::UpdateSimulationBasedOnInput()
 		camera.SetVelocity(Math::sVector(0, 0, 0));
 
 	
-		//load collider mesh for visual
+	//load collider mesh for visual
+	 {
+		auto result = eae6320::Results::Success;
+		Graphics::VertexFormats::sVertex_mesh* vertexData = static_cast<Graphics::VertexFormats::sVertex_mesh*>(calloc(8, sizeof(Graphics::VertexFormats::sVertex_mesh)));
+		uint16_t* indexData = static_cast<uint16_t*>(calloc(36, sizeof(uint16_t))) ;
+		size_t vertexCount = collider[0].GetColliderMeshVertexData(&vertexData);
+		size_t indexCount = collider[0].GetColliderMeshIndexData(&indexData);
+		if (!(result = Graphics::cMesh::Load(colliderMesh, indexCount, indexData, vertexCount, vertexData)))
 		{
-			auto result = eae6320::Results::Success;
-			Graphics::VertexFormats::sVertex_mesh* vertexData = static_cast<Graphics::VertexFormats::sVertex_mesh*>(calloc(8, sizeof(Graphics::VertexFormats::sVertex_mesh)));
-			uint16_t* indexData = static_cast<uint16_t*>(calloc(36, sizeof(uint16_t))) ;
-			size_t vertexCount = collider[0].GetColliderMeshVertexData(&vertexData);
-			size_t indexCount = collider[0].GetColliderMeshIndexData(&indexData);
-			if (!(result = Graphics::cMesh::Load(colliderMesh, indexCount, indexData, vertexCount, vertexData)))
-			{
-				EAE6320_ASSERTF(false, "Failed Initializing Mesh for collider");
-				//return result;
-			}
-			gameObjects[1].SetMesh(colliderMesh);
+	 		EAE6320_ASSERTF(false, "Failed Initializing Mesh for collider");
+	 		//return result;
 		}
-	//}
-
+		gameObjects[1].SetMesh(colliderMesh);
+	 }
 }
 
 void eae6320::cMyGame::UpdateBasedOnInput()

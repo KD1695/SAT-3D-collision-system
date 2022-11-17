@@ -12,9 +12,13 @@ namespace eae6320::Collision
 		//AABB collision check
 		for (size_t i = 0; i < colliderList.size(); i++)
 		{
+			if(!colliderList[i]->GetIsActive())
+			{
+				continue;
+			}
 			for (size_t j = 0; j < colliderList.size(); j++)
 			{
-				if (i == j)
+				if (i == j || !colliderList[j]->GetIsActive())
 				{
 					continue;
 				}

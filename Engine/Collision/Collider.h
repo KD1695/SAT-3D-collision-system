@@ -10,6 +10,9 @@ namespace eae6320
 {
 	namespace Collision
 	{
+		/// <summary>
+		/// Collider representation class. A 3d box collider.
+		/// </summary>
 		class cCollider
 		{
 		private:

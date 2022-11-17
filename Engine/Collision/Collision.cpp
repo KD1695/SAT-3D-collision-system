@@ -9,7 +9,7 @@ namespace eae6320::Collision
 	/// </summary>
 	void CollisionSystemUpdate()
 	{
-		//AABB collision check
+		//SAT collision check
 		for (size_t i = 0; i < colliderList.size(); i++)
 		{
 			if(!colliderList[i]->GetIsActive())
@@ -61,6 +61,7 @@ namespace eae6320::Collision
 						}
 					}
 
+					//Deactivated AABB collision check
 					// if (CollisionCheckAABB(colliderList[i], colliderList[j]) && CollisionCheckAABB(colliderList[j], colliderList[i]))
 					// {
 					// 	colliderList[i]->SetIsColliding(true, colliderList[j]);

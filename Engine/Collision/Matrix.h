@@ -5,6 +5,9 @@ namespace eae6320
 {
 	namespace Collision
 	{
+		/// <summary>
+		/// Single 4 value row based vector representation [1x4]
+		/// </summary>
 		struct sVector4
 		{
 			float x, y, z, w;
@@ -14,10 +17,9 @@ namespace eae6320
 			sVector4 operator*(const sVector4& other) const;
 		};
 
-		/**
-		 * \brief
-		 * Row vectors based matrix
-		 */
+		/// <summary>
+		/// Row vector based matrix representation class
+		/// </summary>
 		class cMatrix4x4
 		{
 		private:

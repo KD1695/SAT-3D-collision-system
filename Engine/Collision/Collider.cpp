@@ -117,11 +117,19 @@ namespace eae6320::Collision
 		return isColliding;
 	}
 
+	/// <summary>
+	/// Check if collider is active or not
+	/// </summary>
+	/// <returns>bool isActive</returns>
 	bool cCollider::GetIsActive() const
 	{
 		return isActive;
 	}
 
+	/// <summary>
+	/// Set collider active/inactive status
+	/// </summary>
+	/// <param name="_isActive">bool activeState</param>
 	void cCollider::SetIsActive(bool _isActive)
 	{
 		isActive = _isActive;

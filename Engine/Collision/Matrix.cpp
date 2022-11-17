@@ -1,11 +1,18 @@
 #include <Engine/Collision/Matrix.h>
 #include <corecrt_math.h>
 
+/// <summary>
+/// Create empty 4x4 matrix
+/// </summary>
 eae6320::Collision::cMatrix4x4::cMatrix4x4()
 {
 
 }
 
+/// <summary>
+/// Create 4x4 matrix from 2d float array
+/// </summary>
+/// <param name="matrix">2d 4x4 float array</param>
 eae6320::Collision::cMatrix4x4::cMatrix4x4(float matrix[4][4])
 {
 	for (int i = 0; i < 4; i++)
@@ -17,6 +24,10 @@ eae6320::Collision::cMatrix4x4::cMatrix4x4(float matrix[4][4])
 	}
 }
 
+/// <summary>
+/// copy constructor
+/// </summary>
+/// <param name="other">other matrix</param>
 eae6320::Collision::cMatrix4x4::cMatrix4x4(const cMatrix4x4& other)
 {
 	for (int i = 0; i < 4; i++)
@@ -28,6 +39,11 @@ eae6320::Collision::cMatrix4x4::cMatrix4x4(const cMatrix4x4& other)
 	}
 }
 
+/// <summary>
+/// Get row at specified index from matrix
+/// </summary>
+/// <param name="index">int index of row</param>
+/// <returns>sVector4 row based vector</returns>
 eae6320::Collision::sVector4 eae6320::Collision::cMatrix4x4::Row(int index) const
 {
 	return sVector4(_matrix[index][0], _matrix[index][1], _matrix[index][2], _matrix[index][3]);
@@ -45,6 +61,11 @@ eae6320::Collision::cMatrix4x4& eae6320::Collision::cMatrix4x4::operator=(const 
 	return *this;
 }
 
+/// <summary>
+/// 4x4 Matrix multiplication
+/// </summary>
+/// <param name="other">other matrix</param>
+/// <returns>cMatrix4x4 matrix after multiplication</returns>
 eae6320::Collision::cMatrix4x4 eae6320::Collision::cMatrix4x4::operator*(const cMatrix4x4& other) const
 {
 	float arr[4][4] = {{0}};
@@ -58,11 +79,22 @@ eae6320::Collision::cMatrix4x4 eae6320::Collision::cMatrix4x4::operator*(const c
 	return cMatrix4x4(arr);
 }
 
+/// <summary>
+/// Opertaor overloading for vector cross product
+/// </summary>
+/// <param name="other">other vector</param>
+/// <returns>sVector4 cross product result</returns>
 eae6320::Collision::sVector4 eae6320::Collision::sVector4::operator*(const sVector4& other) const
 {
 	return sVector4(y*other.z-z*other.y, -(x*other.z-z*other.x), x*other.y-y*other.x, 1);
 }
 
+/// <summary>
+/// Matrix multiplication between 1x4 and 4x4 matrix. 
+/// NOTE: the sVector4 operand appears on RHS of operator and cMatrix4x4 on the LHS
+/// </summary>
+/// <param name="other">sVector4 type row vector</param>
+/// <returns>sVector4 row vector as [1x4] * [4x4] = [1x4]</returns>
 eae6320::Collision::sVector4 eae6320::Collision::cMatrix4x4::operator*(const sVector4& other) const
 {
 	float arr[4] = { 0 };
@@ -73,6 +105,10 @@ eae6320::Collision::sVector4 eae6320::Collision::cMatrix4x4::operator*(const sVe
 	return sVector4(arr[0], arr[1], arr[2], arr[3]);
 }
 
+/// <summary>
+/// create indentity matrix
+/// </summary>
+/// <returns></returns>
 eae6320::Collision::cMatrix4x4 eae6320::Collision::cMatrix4x4::CreateIdentity()
 {
 	float arr[4][4] = {{0}};
@@ -81,6 +117,13 @@ eae6320::Collision::cMatrix4x4 eae6320::Collision::cMatrix4x4::CreateIdentity()
 	return cMatrix4x4(arr);
 }
 
+/// <summary>
+/// Create scale matrix based on x,y,z scale
+/// </summary>
+/// <param name="scaleX"></param>
+/// <param name="scaleY"></param>
+/// <param name="scaleZ"></param>
+/// <returns></returns>
 eae6320::Collision::cMatrix4x4 eae6320::Collision::cMatrix4x4::CreateScale(float scaleX, float scaleY, float scaleZ)
 {
 	float arr[4][4] = {{0}};
@@ -92,6 +135,13 @@ eae6320::Collision::cMatrix4x4 eae6320::Collision::cMatrix4x4::CreateScale(float
 	return cMatrix4x4(arr);
 }
 
+/// <summary>
+/// Create Transform matrix based on x,y,z position
+/// </summary>
+/// <param name="x"></param>
+/// <param name="y"></param>
+/// <param name="z"></param>
+/// <returns></returns>
 eae6320::Collision::cMatrix4x4 eae6320::Collision::cMatrix4x4::CreateTransform(float x, float y, float z)
 {
 	float arr[4][4] = {{0}};
@@ -103,6 +153,10 @@ eae6320::Collision::cMatrix4x4 eae6320::Collision::cMatrix4x4::CreateTransform(f
 	return cMatrix4x4(arr);
 }
 
+/// <summary>
+/// Create transpose of a matrix
+/// </summary>
+/// <returns></returns>
 eae6320::Collision::cMatrix4x4 eae6320::Collision::cMatrix4x4::Transpose()
 {
 	float arr[4][4];
@@ -116,6 +170,11 @@ eae6320::Collision::cMatrix4x4 eae6320::Collision::cMatrix4x4::Transpose()
 	return cMatrix4x4(arr);
 }
 
+/// <summary>
+/// Create X rotation matrix
+/// </summary>
+/// <param name="radians">rotation in x-axis, euler angle in radians</param>
+/// <returns>4x4 rotation matrix</returns>
 eae6320::Collision::cMatrix4x4 eae6320::Collision::cMatrix4x4::CreateXRotation(float radians)
 {
 	const float sin = sinf(radians);
@@ -129,6 +188,11 @@ eae6320::Collision::cMatrix4x4 eae6320::Collision::cMatrix4x4::CreateXRotation(f
 	return cMatrix4x4(arr);
 }
 
+/// <summary>
+/// Create Y rotation matrix
+/// </summary>
+/// <param name="radians">rotation in y-axis, euler angle in radians</param>
+/// <returns>4x4 rotation matrix</returns>
 eae6320::Collision::cMatrix4x4 eae6320::Collision::cMatrix4x4::CreateYRotation(float radians)
 {
 	const float sin = sinf(radians);
@@ -142,6 +206,11 @@ eae6320::Collision::cMatrix4x4 eae6320::Collision::cMatrix4x4::CreateYRotation(f
 	return cMatrix4x4(arr);
 }
 
+/// <summary>
+/// Create Z rotation matrix
+/// </summary>
+/// <param name="radians">rotation in z-axis, euler angle in radians</param>
+/// <returns>4x4 rotation matrix</returns>
 eae6320::Collision::cMatrix4x4 eae6320::Collision::cMatrix4x4::CreateZRotation(float radians)
 {
 	const float sin = sinf(radians);

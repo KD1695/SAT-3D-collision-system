@@ -20,6 +20,7 @@ namespace eae6320
 			void SetVelocity(Math::sVector velocity);
 			Math::cMatrix_transformation GetLocalTransform();
 			Math::cMatrix_transformation GetCameraToProjectedTransform();
+			Physics::sRigidBodyState* GetRigidBodyReference();
 		};
 	}
 }

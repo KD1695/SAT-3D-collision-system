@@ -31,3 +31,8 @@ eae6320::Math::cMatrix_transformation eae6320::Components::Camera::GetCameraToPr
 {
 	return cameraToProjectedTransform;
 }
+
+eae6320::Physics::sRigidBodyState* eae6320::Components::Camera::GetRigidBodyReference()
+{
+	return &rigidbody;
+}

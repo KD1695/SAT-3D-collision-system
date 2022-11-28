@@ -11,6 +11,9 @@
 #include <Engine/Application/iApplication.h>
 #include <Engine/Results/Results.h>
 
+#include "Engine/Components/Camera.h"
+#include "Engine/Components/GameObject.h"
+
 #if defined( EAE6320_PLATFORM_WINDOWS )
 	#include "Resource Files/Resource.h"
 #endif
@@ -27,6 +30,12 @@ namespace eae6320
 
 	private:
 
+		float bg_Color[4] = { 0,1,1,1 };
+		eae6320::Components::Camera camera;
+		eae6320::Components::GameObject gameObjects[2];
+		size_t objectCount = 2;
+		bool changeMeshFlag = false;
+		
 		// Configuration
 		//--------------
 
@@ -70,7 +79,10 @@ namespace eae6320
 		// Run
 		//----
 
+		void SubmitDataToBeRendered(const float i_elapsedSecondCount_systemTime, const float i_elapsedSecondCount_sinceLastSimulationUpdate);
+		void UpdateSimulationBasedOnInput() final;
 		void UpdateBasedOnInput() final;
+		void UpdateBasedOnTime(const float i_elapsedSecondCount_sinceLastUpdate) final;
 
 		// Initialize / Clean Up
 		//----------------------

@@ -14,6 +14,7 @@ return
 	meshes = 
     	{
     		"Meshes/cube.json",
-    		"Meshes/plane.json"
+    		"Meshes/plane.json",
+    		"Meshes/ship.json"
         },
 }

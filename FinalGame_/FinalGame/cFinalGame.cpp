@@ -111,7 +111,7 @@ eae6320::cResult eae6320::cFinalGame::Initialize()
 
 	//init gameObjects
 	{
-		if (!(result = gameObjects[0].InitializeMeshEffect("data/Meshes/cube.json", "data/Shaders/Fragment/standard.shader")))
+		if (!(result = gameObjects[0].InitializeMeshEffect("data/Meshes/ship.json", "data/Shaders/Fragment/standard.shader")))
 		{
 			EAE6320_ASSERTF(false, "Failed Initializing GameObject")
 			return result;

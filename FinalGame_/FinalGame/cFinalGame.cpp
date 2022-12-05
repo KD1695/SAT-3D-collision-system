@@ -16,68 +16,65 @@
 
 void eae6320::cFinalGame::SubmitDataToBeRendered(const float i_elapsedSecondCount_systemTime, const float i_elapsedSecondCount_sinceLastSimulationUpdate)
 {
+	//get all gameObjects
+	int count = 0;
+	for(size_t i=0; i<levelBlocksCount; i++)
+	{
+		count += level_blocks[i].blockCount+1;
+	}
+	count++; //player
+	allGameObjects = new Components::GameObject[count];
+
+	int index = 0;
+	for(size_t i=0; i<levelBlocksCount; i++)
+	{
+		level_blocks[i].GetGameObjects(allGameObjects, index);
+		index += level_blocks->blockCount+1;
+	}
+	allGameObjects[count-1] = ship;
+	
 	eae6320::Graphics::SetBgColor(bg_Color);
-	eae6320::Graphics::SetMeshEffectData(camera, gameObjects, objectCount);
+	eae6320::Graphics::SetMeshEffectData(camera, allGameObjects, count);
 }
 
 void eae6320::cFinalGame::UpdateSimulationBasedOnInput()
 {
 	//player movement
-	if (UserInput::IsKeyPressed('A'))
+	if (UserInput::IsKeyPressed('A') && !isLeftKeyPressed)
 	{
 		//move left
-		camera.SetVelocity(Math::sVector(-10, 0, 0));
+		isTargetSet = true;
+		isLeftKeyPressed = true;
+		currentTargetXPos -= (currentTargetXPos-movementDistance >= -(movementDistance*lanesOnEachSide)) ? movementDistance : 0;
 	}
-	else if (UserInput::IsKeyPressed('D'))
+	else if (UserInput::IsKeyPressed('D') && !isRightKeyPressed)
 	{
 		//move right
-		camera.SetVelocity(Math::sVector(10, 0, 0));
+		isTargetSet = true;
+		isRightKeyPressed = true;
+		currentTargetXPos += (currentTargetXPos+movementDistance <= (movementDistance*lanesOnEachSide)) ? movementDistance : 0;
 	}
 	else if (UserInput::IsKeyPressed('W'))
 	{
 		//move up
-		camera.SetVelocity(Math::sVector(0, 0, -10));
+		camera.SetVelocity(Math::sVector(0, 0, -shipSpeed));
 	}
 	else if (UserInput::IsKeyPressed('S'))
 	{
 		//move down
-		camera.SetVelocity(Math::sVector(0, 0, 10));
+		camera.SetVelocity(Math::sVector(0, 0, shipSpeed));
 	}
-	else if (UserInput::IsKeyPressed('J'))
+	else if (UserInput::IsKeyPressed(UserInput::KeyCodes::Space))
 	{
-		//move up
-		camera.SetVelocity(Math::sVector(0, 10, 0));
-	}
-	else if (UserInput::IsKeyPressed('K'))
-	{
-		//move down
-		camera.SetVelocity(Math::sVector(0, -10, 0));
+		//Jump
+		JumpStart();
 	}
 	else
+	{
+		isLeftKeyPressed = false;
+		isRightKeyPressed = false;
+		camera.GetRigidBodyReference()->acceleration = Math::sVector(0,0,0);
 		camera.SetVelocity(Math::sVector(0, 0, 0));
-
-	//player rotation
-	if (UserInput::IsKeyPressed('Z'))
-	{
-		//rotate Y
-		camera.GetRigidBodyReference()->angularVelocity_axis_local = Math::sVector(0,1,0);
-		camera.GetRigidBodyReference()->angularSpeed = 0.1f;
-	}
-	else if (UserInput::IsKeyPressed('X'))
-	{
-		//rotate Z
-		camera.GetRigidBodyReference()->angularVelocity_axis_local = Math::sVector(0,0,1);
-		camera.GetRigidBodyReference()->angularSpeed = 0.1f;
-	}
-	else if (UserInput::IsKeyPressed('C'))
-	{
-		//rotate X
-		camera.GetRigidBodyReference()->angularVelocity_axis_local = Math::sVector(1,0,0);
-		camera.GetRigidBodyReference()->angularSpeed = 0.1f;
-	}
-	else
-	{
-		camera.GetRigidBodyReference()->angularSpeed = 0.0f;
 	}
 }
 
@@ -95,10 +92,37 @@ void eae6320::cFinalGame::UpdateBasedOnInput()
 void eae6320::cFinalGame::UpdateBasedOnTime(const float i_elapsedSecondCount_sinceLastUpdate)
 {
 	Physics::sRigidBodyState* cameraRigidBody = camera.GetRigidBodyReference();
-	gameObjects[0].GetRigidBodyReference()->position = Math::sVector(cameraRigidBody->position.x, cameraRigidBody->position.y - 5, cameraRigidBody->position.z - 15);
-	gameObjects[0].Update(i_elapsedSecondCount_sinceLastUpdate);
-	gameObjects[1].Update(i_elapsedSecondCount_sinceLastUpdate);
+
+	//move player if target is set
+	if(isTargetSet)
+	{
+		if(abs(cameraRigidBody->position.x - currentTargetXPos) < 0.1f)
+		{
+			isTargetSet = false;
+			camera.SetVelocity(Math::sVector(0, 0, 0));
+		}
+		else if(cameraRigidBody->position.x > currentTargetXPos)
+		{
+			camera.SetVelocity(Math::sVector(-100, 0, 0));
+		}
+		else
+		{
+			camera.SetVelocity(Math::sVector(100, 0, 0));
+		}
+	}
+
+	JumpUpdate(i_elapsedSecondCount_sinceLastUpdate);
+	ship.GetRigidBodyReference()->position = Math::sVector(cameraRigidBody->position.x, cameraRigidBody->position.y - 5, cameraRigidBody->position.z - 15);
+	ship.Update(i_elapsedSecondCount_sinceLastUpdate);
 	camera.Update(i_elapsedSecondCount_sinceLastUpdate);
+	for(size_t i=0; i<levelBlocksCount; i++)
+	{
+		if(level_blocks[i].plane.GetRigidBodyReference()->position.z - ship.GetRigidBodyReference()->position.z > 80)
+		{
+			level_blocks[i].UpdatePosition(level_blocks[i].plane.GetRigidBodyReference()->position.z - 300);
+		}
+		level_blocks[i].Update(i_elapsedSecondCount_sinceLastUpdate);
+	}
 }
 
 // Initialize / Clean Up
@@ -111,20 +135,24 @@ eae6320::cResult eae6320::cFinalGame::Initialize()
 
 	//init gameObjects
 	{
-		if (!(result = gameObjects[0].InitializeMeshEffect("data/Meshes/ship.json", "data/Shaders/Fragment/standard.shader")))
+		if (!(result = ship.InitializeMeshEffect("data/Meshes/ship.json", "data/Shaders/Fragment/standard.shader")))
 		{
 			EAE6320_ASSERTF(false, "Failed Initializing GameObject")
 			return result;
 		}
 	}
 
+	float zDist = -75;
+	for(size_t i=0; i<levelBlocksCount; i++)
 	{
-		if (!(result = gameObjects[1].InitializeMeshEffect("data/Meshes/plane.json", "data/Shaders/Fragment/standard.shader")))
+		if (!(result = level_blocks[i].Initialize(zDist)))
 		{
-			EAE6320_ASSERTF(false, "Failed Initializing GameObject")
+			EAE6320_ASSERTF(false, "Failed Initializing Level block")
 			return result;
 		}
+		zDist -= 150;
 	}
+	
 	return result;
 }
 
@@ -132,8 +160,46 @@ eae6320::cResult eae6320::cFinalGame::CleanUp()
 {
 	eae6320::Logging::OutputMessage("Cleaning up Game...");
 
-	gameObjects[0].CleanUp();
-	gameObjects[1].CleanUp();
-	
+	ship.CleanUp();
+	for(size_t i=0; i<levelBlocksCount; i++)
+	{
+		level_blocks[i].CleanUp();
+	}
 	return Results::Success;
+}
+
+void eae6320::cFinalGame::JumpStart()
+{
+	if(!isJumping)
+	{
+		Physics::sRigidBodyState* rigidBody = camera.GetRigidBodyReference();
+		isJumping = true;
+		currentJumpTime = 0;
+		rigidBody->acceleration = Math::sVector(0,69,0);
+	}
+}
+
+void eae6320::cFinalGame::JumpUpdate(const float i_elapsedSecondCount_sinceLastUpdate)
+{
+	Physics::sRigidBodyState* rigidBody = camera.GetRigidBodyReference();
+	if(isJumping)
+	{
+		if(currentJumpTime < jumpTime)
+		{
+			currentJumpTime += i_elapsedSecondCount_sinceLastUpdate;
+			rigidBody->acceleration = Math::sVector(0,69,0);
+		}
+		else
+		{
+			if(rigidBody->position.y <= 0)
+			{
+				isJumping = false;
+			}
+			rigidBody->acceleration = Math::sVector(0,-400,0);
+		}
+	}
+	else
+	{
+		rigidBody->acceleration = Math::sVector(0,0,0);
+	}
 }

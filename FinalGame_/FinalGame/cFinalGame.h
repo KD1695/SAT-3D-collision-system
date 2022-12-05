@@ -11,6 +11,7 @@
 #include <Engine/Application/iApplication.h>
 #include <Engine/Results/Results.h>
 
+#include "LevelBlock.h"
 #include "Engine/Components/Camera.h"
 #include "Engine/Components/GameObject.h"
 
@@ -31,10 +32,24 @@ namespace eae6320
 	private:
 
 		float bg_Color[4] = { 0,1,1,1 };
-		eae6320::Components::Camera camera;
-		eae6320::Components::GameObject gameObjects[2];
-		size_t objectCount = 2;
-		bool changeMeshFlag = false;
+		Components::GameObject* allGameObjects = nullptr;
+		
+		Components::Camera camera;
+		Components::GameObject ship;
+		LevelBlock level_blocks[2];
+		size_t levelBlocksCount = 2;
+
+		//movement
+		float shipSpeed = 80.0f;
+		float movementDistance = 10.0f;
+		float lanesOnEachSide = 1;
+		bool isTargetSet = false;
+		float currentTargetXPos = 0.0f;
+		bool isLeftKeyPressed = false;
+		bool isRightKeyPressed = false;
+		bool isJumping = false;
+		float jumpTime = 0.75f;
+		float currentJumpTime = 0.0f;
 		
 		// Configuration
 		//--------------
@@ -89,6 +104,10 @@ namespace eae6320
 
 		cResult Initialize() final;
 		cResult CleanUp() final;
+
+		//GameFunctions
+		void JumpStart();
+		void JumpUpdate(const float i_elapsedSecondCount_sinceLastUpdate);
 
 	};
 }

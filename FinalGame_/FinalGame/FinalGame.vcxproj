@@ -29,12 +29,14 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cFinalGame.h" />
+    <ClInclude Include="LevelBlock.h" />
     <ClInclude Include="Resource Files\Resource.h" />
     <ClInclude Include="Resource Files\targetver.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="cFinalGame.cpp" />
     <ClCompile Include="EntryPoint.cpp" />
+    <ClCompile Include="LevelBlock.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Engine\Application\Application.vcxproj">

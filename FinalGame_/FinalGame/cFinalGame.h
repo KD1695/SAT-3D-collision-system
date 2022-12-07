@@ -46,7 +46,7 @@ namespace eae6320
 		inline static eae6320::AudioSystem::cAudio collisionAudio;
 
 		//movement
-		float shipSpeed = 80.0f;
+		inline static float shipSpeed = 80.0f;
 		float movementDistance = 10.0f;
 		float lanesOnEachSide = 1;
 		bool isTargetSet = false;
@@ -56,6 +56,7 @@ namespace eae6320
 		bool isJumping = false;
 		float jumpTime = 0.75f;
 		float currentJumpTime = 0.0f;
+		bool movementStarted = false;
 
 		inline static bool isStopped = false;
 		

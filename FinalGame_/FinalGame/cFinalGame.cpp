@@ -60,15 +60,11 @@ void eae6320::cFinalGame::UpdateSimulationBasedOnInput()
 		isRightKeyPressed = true;
 		currentTargetXPos += (currentTargetXPos+movementDistance <= (movementDistance*lanesOnEachSide)) ? movementDistance : 0;
 	}
-	else if (UserInput::IsKeyPressed('W') && !isStopped)
+	else if (UserInput::IsKeyPressed('W') && !movementStarted)
 	{
 		//move up
 		camera.SetVelocity(Math::sVector(0, 0, -shipSpeed));
-	}
-	else if (UserInput::IsKeyPressed('S') && !isStopped)
-	{
-		//move down
-		camera.SetVelocity(Math::sVector(0, 0, shipSpeed));
+		movementStarted = true;
 	}
 	else if (UserInput::IsKeyPressed(UserInput::KeyCodes::Space))
 	{
@@ -81,7 +77,14 @@ void eae6320::cFinalGame::UpdateSimulationBasedOnInput()
 		isLeftKeyPressed = false;
 		isRightKeyPressed = false;
 		camera.GetRigidBodyReference()->acceleration = Math::sVector(0,0,0);
-		camera.SetVelocity(Math::sVector(0, 0, 0));
+		if (!movementStarted || isStopped)
+		{
+			camera.SetVelocity(Math::sVector(0, 0, 0));
+		}
+		else if (!isStopped && movementStarted)
+		{
+			camera.SetVelocity(Math::sVector(0, 0, -shipSpeed));
+		}
 	}
 
 	if (!bgAudio.IsPlaying())
@@ -111,15 +114,15 @@ void eae6320::cFinalGame::UpdateBasedOnTime(const float i_elapsedSecondCount_sin
 		if(abs(cameraRigidBody->position.x - currentTargetXPos) < 0.1f)
 		{
 			isTargetSet = false;
-			camera.SetVelocity(Math::sVector(0, 0, 0));
+			camera.SetVelocity(Math::sVector(0, 0, cameraRigidBody->velocity.z));
 		}
 		else if(cameraRigidBody->position.x > currentTargetXPos)
 		{
-			camera.SetVelocity(Math::sVector(-100, 0, 0));
+			camera.SetVelocity(Math::sVector(-100, 0, cameraRigidBody->velocity.z));
 		}
 		else
 		{
-			camera.SetVelocity(Math::sVector(100, 0, 0));
+			camera.SetVelocity(Math::sVector(100, 0, cameraRigidBody->velocity.z));
 		}
 	}
 

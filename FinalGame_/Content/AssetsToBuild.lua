@@ -17,4 +17,11 @@ return
     		"Meshes/plane.json",
     		"Meshes/ship.json"
         },
+
+	audios =
+    {
+        { path = "Audios/collide.mp3"},
+        { path = "Audios/move.mp3"},
+        { path = "Audios/bgm.mp3"},
+    },
 }

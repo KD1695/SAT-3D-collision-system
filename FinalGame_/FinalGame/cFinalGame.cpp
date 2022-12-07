@@ -35,6 +35,10 @@ void eae6320::cFinalGame::SubmitDataToBeRendered(const float i_elapsedSecondCoun
 	
 	eae6320::Graphics::SetBgColor(bg_Color);
 	eae6320::Graphics::SetMeshEffectData(camera, allGameObjects, count);
+
+	bgAudio.SubmitAudioSource();
+	moveAudio.SubmitAudioSource();
+	collisionAudio.SubmitAudioSource();
 }
 
 void eae6320::cFinalGame::UpdateSimulationBasedOnInput()
@@ -43,6 +47,7 @@ void eae6320::cFinalGame::UpdateSimulationBasedOnInput()
 	if (UserInput::IsKeyPressed('A') && !isLeftKeyPressed)
 	{
 		//move left
+		moveAudio.PlayIndependent();
 		isTargetSet = true;
 		isLeftKeyPressed = true;
 		currentTargetXPos -= (currentTargetXPos-movementDistance >= -(movementDistance*lanesOnEachSide)) ? movementDistance : 0;
@@ -50,6 +55,7 @@ void eae6320::cFinalGame::UpdateSimulationBasedOnInput()
 	else if (UserInput::IsKeyPressed('D') && !isRightKeyPressed)
 	{
 		//move right
+		moveAudio.PlayIndependent();
 		isTargetSet = true;
 		isRightKeyPressed = true;
 		currentTargetXPos += (currentTargetXPos+movementDistance <= (movementDistance*lanesOnEachSide)) ? movementDistance : 0;
@@ -67,6 +73,7 @@ void eae6320::cFinalGame::UpdateSimulationBasedOnInput()
 	else if (UserInput::IsKeyPressed(UserInput::KeyCodes::Space))
 	{
 		//Jump
+		moveAudio.PlayIndependent();
 		JumpStart();
 	}
 	else
@@ -75,6 +82,11 @@ void eae6320::cFinalGame::UpdateSimulationBasedOnInput()
 		isRightKeyPressed = false;
 		camera.GetRigidBodyReference()->acceleration = Math::sVector(0,0,0);
 		camera.SetVelocity(Math::sVector(0, 0, 0));
+	}
+
+	if (!bgAudio.IsPlaying())
+	{
+		bgAudio.Play();
 	}
 }
 
@@ -155,6 +167,10 @@ eae6320::cResult eae6320::cFinalGame::Initialize()
 		}
 		zDist -= 150;
 	}
+
+	bgAudio.CreateAudioData("data/Audios/bgm.mp3", "bgm", 1000, true);
+	moveAudio.CreateAudioData("data/Audios/move.mp3", "move", 750, false);
+	collisionAudio.CreateAudioData("data/Audios/collide.mp3", "collide", 1000, false);
 	
 	return result;
 }
@@ -214,6 +230,7 @@ bool eae6320::cFinalGame::OnCollisionEnter(Collision::cCollider* self, Collision
 	other->GetRigidBodyReference()->angularSpeed = 20;
 	self->GetRigidBodyReference()->velocity = Math::sVector(0,0,0);
 	isStopped = true;
+	collisionAudio.PlayIndependent();
 	return true;
 }
 

@@ -14,6 +14,7 @@
 #include "LevelBlock.h"
 #include "Engine/Components/Camera.h"
 #include "Engine/Components/GameObject.h"
+#include "Engine/Audio/AudioSystem.h"
 
 #if defined( EAE6320_PLATFORM_WINDOWS )
 	#include "Resource Files/Resource.h"
@@ -39,6 +40,10 @@ namespace eae6320
 		Collision::cCollider shipCollider;
 		LevelBlock level_blocks[3];
 		size_t levelBlocksCount = 3;
+
+		eae6320::AudioSystem::cAudio bgAudio;
+		eae6320::AudioSystem::cAudio moveAudio;
+		inline static eae6320::AudioSystem::cAudio collisionAudio;
 
 		//movement
 		float shipSpeed = 80.0f;

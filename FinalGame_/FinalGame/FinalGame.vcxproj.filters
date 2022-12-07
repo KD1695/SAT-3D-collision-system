@@ -37,5 +37,6 @@
   <ItemGroup>
     <ClCompile Include="cFinalGame.cpp" />
     <ClCompile Include="EntryPoint.cpp" />
+    <ClCompile Include="LevelBlock.cpp" />
   </ItemGroup>
 </Project>

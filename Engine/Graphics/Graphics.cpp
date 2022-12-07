@@ -37,11 +37,11 @@ namespace
 
 	struct sDataRequiredToRenderAFrame
 	{
-		sMeshEffectPair meshEffectPairs[10];
+		sMeshEffectPair meshEffectPairs[20];
 		eae6320::Graphics::ConstantBufferFormats::sFrame constantData_frame;
-		eae6320::Graphics::ConstantBufferFormats::sDrawCall constantData_drawCall[10];
+		eae6320::Graphics::ConstantBufferFormats::sDrawCall constantData_drawCall[20];
 		float bgColor[4];
-		size_t meshEffectPairCount = 10;
+		size_t meshEffectPairCount = 20;
 	};
 	// In our class there will be two copies of the data required to render a frame:
 	//	* One of them will be in the process of being populated by the data currently being submitted by the application loop thread

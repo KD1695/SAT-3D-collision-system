@@ -45,21 +45,17 @@ namespace eae6320::Collision
 					listOfAxisToCheck[12] = listOfAxisToCheck[2] * listOfAxisToCheck[3];
 					listOfAxisToCheck[13] = listOfAxisToCheck[2] * listOfAxisToCheck[4];
 					listOfAxisToCheck[14] = listOfAxisToCheck[2] * listOfAxisToCheck[5];
-
-					for(size_t k=0; k<15; k++)
+					size_t k = 0;
+					for(k=0; k<15; k++)
 					{
 						if(!CollisionCheckSAT(colliderList[i], colliderList[j], listOfAxisToCheck[k]))
 						{
-							colliderList[i]->SetIsColliding(false, colliderList[j]);
-							colliderList[j]->SetIsColliding(false, colliderList[i]);
 							break;
 						}
-						else if(k==14)
-						{
-							colliderList[i]->SetIsColliding(true, colliderList[j]);
-							colliderList[j]->SetIsColliding(true, colliderList[i]);
-						}
 					}
+					bool isColliding = k < 15;
+					colliderList[i]->SetIsColliding(isColliding, colliderList[j]);
+					colliderList[j]->SetIsColliding(isColliding, colliderList[i]);
 
 					//Deactivated AABB collision check
 					// if (CollisionCheckAABB(colliderList[i], colliderList[j]) && CollisionCheckAABB(colliderList[j], colliderList[i]))

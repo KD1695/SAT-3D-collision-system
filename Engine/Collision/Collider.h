@@ -19,10 +19,10 @@ namespace eae6320
 			eae6320::Physics::sRigidBodyState* rigidBodyState = nullptr;
 			eae6320::Math::sVector size = eae6320::Math::sVector(1, 1, 1);
 			eae6320::Math::sVector colliderVertices[8];
-			bool isColliding = false;
 			bool isActive = true;
 			std::function<bool(cCollider*, cCollider*)> callback_function_on_enter;
 			std::function<bool(cCollider*, cCollider*)> callback_function_on_exit;
+			std::vector<cCollider*> currentlyCollidingColliders;
 			bool isCallbackSetEnter = false;
 			bool isCallbackSetExit = false;
 			uint16_t colliderIndexData[36] = {

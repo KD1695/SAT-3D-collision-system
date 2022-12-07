@@ -73,18 +73,31 @@ namespace eae6320::Collision
 	/// <param name="other">other collider in collision</param>
 	void cCollider::SetIsColliding(bool _isColliding, cCollider* other)
 	{
-		if (isColliding == _isColliding)
-			return;
-		isColliding = _isColliding;
-		if(isColliding)
+		if(_isColliding)
 		{
+			for(size_t i=0; i<currentlyCollidingColliders.size(); i++)
+			{
+				if(currentlyCollidingColliders[i] == other)
+				{
+					return;
+				}
+			}
+			currentlyCollidingColliders.push_back(other);
 			if(isCallbackSetEnter)
 				callback_function_on_enter(this, other);
 		}
 		else
 		{
-			if(isCallbackSetExit)
-				callback_function_on_exit(this, other);
+			for(size_t i=0; i<currentlyCollidingColliders.size(); i++)
+			{
+				if(currentlyCollidingColliders[i] == other)
+				{
+					if(isCallbackSetExit)
+						callback_function_on_exit(this, other);
+					currentlyCollidingColliders.erase(currentlyCollidingColliders.begin()+(int)i);
+					break;
+				}
+			}
 		}
 	}
 
@@ -114,7 +127,7 @@ namespace eae6320::Collision
 	/// <returns>bool isCollding for collider</returns>
 	bool cCollider::GetIsColliding() const
 	{
-		return isColliding;
+		return (!currentlyCollidingColliders.empty());
 	}
 
 	/// <summary>

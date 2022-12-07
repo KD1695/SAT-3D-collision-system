@@ -53,7 +53,7 @@ namespace eae6320::Collision
 							break;
 						}
 					}
-					bool isColliding = k < 15;
+					bool isColliding = !(k < 15);
 					colliderList[i]->SetIsColliding(isColliding, colliderList[j]);
 					colliderList[j]->SetIsColliding(isColliding, colliderList[i]);
 

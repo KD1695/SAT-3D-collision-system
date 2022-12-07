@@ -135,6 +135,11 @@ namespace eae6320::Collision
 		isActive = _isActive;
 	}
 
+	Physics::sRigidBodyState* cCollider::GetRigidBodyReference()
+	{
+		return rigidBodyState;
+	}
+
 	/// <summary>
 	/// Getter for collider vertices
 	/// </summary>

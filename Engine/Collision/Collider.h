@@ -51,6 +51,7 @@ namespace eae6320
 			bool GetIsColliding() const;
 			bool GetIsActive() const;
 			void SetIsActive(bool _isActive);
+			Physics::sRigidBodyState* GetRigidBodyReference();
 			eae6320::Math::sVector* GetColliderVertices();
 			sVector4 GetUpNormal() const;
 			sVector4 GetRightNormal() const;

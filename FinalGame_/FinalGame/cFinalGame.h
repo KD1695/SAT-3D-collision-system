@@ -36,8 +36,9 @@ namespace eae6320
 		
 		Components::Camera camera;
 		Components::GameObject ship;
-		LevelBlock level_blocks[2];
-		size_t levelBlocksCount = 2;
+		Collision::cCollider shipCollider;
+		LevelBlock level_blocks[3];
+		size_t levelBlocksCount = 3;
 
 		//movement
 		float shipSpeed = 80.0f;
@@ -50,6 +51,8 @@ namespace eae6320
 		bool isJumping = false;
 		float jumpTime = 0.75f;
 		float currentJumpTime = 0.0f;
+
+		inline static bool isStopped = false;
 		
 		// Configuration
 		//--------------
@@ -109,6 +112,10 @@ namespace eae6320
 		void JumpStart();
 		void JumpUpdate(const float i_elapsedSecondCount_sinceLastUpdate);
 
+		//Collision Callbacks
+		//----
+		static bool OnCollisionEnter(Collision::cCollider* self, Collision::cCollider* other);
+		static bool OnCollisionExit(Collision::cCollider* self, Collision::cCollider* other);
 	};
 }
 

@@ -36,6 +36,7 @@ eae6320::cResult LevelBlock::Initialize(float zDist)
         float x = (float)(((rand()%3)-1)*10);
         float z = (float)(rand()%130)-65;
         blocks[i].GetRigidBodyReference()->position = eae6320::Math::sVector(x, plane.GetRigidBodyReference()->position.y, plane.GetRigidBodyReference()->position.z + z);
+        colliders[i] = eae6320::Collision::cCollider(blocks[i].GetRigidBodyReference(),eae6320::Math::sVector(7,7,7));
     }
 
     isInitialized = true;
@@ -61,6 +62,7 @@ void LevelBlock::Update(const float i_secondCountToIntegrate)
     for(int i=0; i<blockCount; i++)
     {
         blocks[i].Update(i_secondCountToIntegrate);
+        colliders[i].Update(i_secondCountToIntegrate);
     }
     plane.Update(i_secondCountToIntegrate);
 }
@@ -75,6 +77,7 @@ void LevelBlock::UpdatePosition(float zDist)
         float x = (float)(((rand()%3)-1)*10);
         float z = (float)(rand()%130)-65;
         blocks[i].GetRigidBodyReference()->position = eae6320::Math::sVector(x, plane.GetRigidBodyReference()->position.y, plane.GetRigidBodyReference()->position.z + z);
+        blocks[i].GetRigidBodyReference()->angularSpeed = 0;
     }
 }
 

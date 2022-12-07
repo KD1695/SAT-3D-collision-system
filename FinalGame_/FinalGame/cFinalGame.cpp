@@ -54,12 +54,12 @@ void eae6320::cFinalGame::UpdateSimulationBasedOnInput()
 		isRightKeyPressed = true;
 		currentTargetXPos += (currentTargetXPos+movementDistance <= (movementDistance*lanesOnEachSide)) ? movementDistance : 0;
 	}
-	else if (UserInput::IsKeyPressed('W'))
+	else if (UserInput::IsKeyPressed('W') && !isStopped)
 	{
 		//move up
 		camera.SetVelocity(Math::sVector(0, 0, -shipSpeed));
 	}
-	else if (UserInput::IsKeyPressed('S'))
+	else if (UserInput::IsKeyPressed('S') && !isStopped)
 	{
 		//move down
 		camera.SetVelocity(Math::sVector(0, 0, shipSpeed));
@@ -119,7 +119,7 @@ void eae6320::cFinalGame::UpdateBasedOnTime(const float i_elapsedSecondCount_sin
 	{
 		if(level_blocks[i].plane.GetRigidBodyReference()->position.z - ship.GetRigidBodyReference()->position.z > 80)
 		{
-			level_blocks[i].UpdatePosition(level_blocks[i].plane.GetRigidBodyReference()->position.z - 300);
+			level_blocks[i].UpdatePosition(level_blocks[i].plane.GetRigidBodyReference()->position.z - (150.0f*(float)levelBlocksCount));
 		}
 		level_blocks[i].Update(i_elapsedSecondCount_sinceLastUpdate);
 	}
@@ -141,6 +141,9 @@ eae6320::cResult eae6320::cFinalGame::Initialize()
 			return result;
 		}
 	}
+	shipCollider = Collision::cCollider(ship.GetRigidBodyReference(), Math::sVector(5,7,5));
+	shipCollider.SetOnCollisionEnterCallback(OnCollisionEnter);
+	shipCollider.SetOnCollisionExitCallback(OnCollisionExit);
 
 	float zDist = -75;
 	for(size_t i=0; i<levelBlocksCount; i++)
@@ -202,4 +205,23 @@ void eae6320::cFinalGame::JumpUpdate(const float i_elapsedSecondCount_sinceLastU
 	{
 		rigidBody->acceleration = Math::sVector(0,0,0);
 	}
+}
+
+bool eae6320::cFinalGame::OnCollisionEnter(Collision::cCollider* self, Collision::cCollider* other)
+{
+	eae6320::Logging::OutputMessage("Collision Enter");
+	other->GetRigidBodyReference()->angularVelocity_axis_local = Math::sVector(0,1,0);
+	other->GetRigidBodyReference()->angularSpeed = 20;
+	self->GetRigidBodyReference()->velocity = Math::sVector(0,0,0);
+	isStopped = true;
+	return true;
+}
+
+bool eae6320::cFinalGame::OnCollisionExit(Collision::cCollider* self,Collision::cCollider* other)
+{
+	eae6320::Logging::OutputMessage("Collision Exit");
+	other->GetRigidBodyReference()->angularVelocity_axis_local = Math::sVector(0,1,0);
+	other->GetRigidBodyReference()->angularSpeed = 0;
+	isStopped = false;
+	return true;
 }
